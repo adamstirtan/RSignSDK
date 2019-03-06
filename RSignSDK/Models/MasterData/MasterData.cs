@@ -1,5 +1,5 @@
 ﻿namespace RSignSDK.Models.MasterData
 {
-    internal abstract class MasterData
+    public abstract class MasterData
     { }
 }

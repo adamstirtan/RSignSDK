@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-using Fern.RSignSDK.Models.MasterData;
+using RSignSDK.Models.MasterData;
 
 namespace RSignSDK.Contracts
 {
