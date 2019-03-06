@@ -1,13 +1,16 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RSignSDK.Models.Authentication;
 
 namespace RSignSDK.Tests
 {
-    [TestClass]
-    public class BaseApiTest
+    public abstract class BaseApiTest
     {
-        [TestMethod]
-        public void TestMethod1()
+        protected static string EmailId = "";
+        protected static string Password = "";
+        protected static string ReferenceKey = "";
+
+        protected RSignAPICredentials GetCredentials()
         {
+            return new RSignAPICredentials(EmailId, Password, ReferenceKey);
         }
     }
 }

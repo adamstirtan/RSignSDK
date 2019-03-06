@@ -13,4 +13,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RSignSDK\RSignSDK.csproj" />
+  </ItemGroup>
+
 </Project>
