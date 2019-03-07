@@ -1,11 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace RSignSDK.Models.MasterData
 {
-    class StatusCode
+    public class StatusCode
     {
+        /// <summary>
+        /// Uniquely identifies the status code.
+        /// </summary>
+        public Guid ID { get; set; }
+
+        /// <summary>
+        /// Name or description of the status code.
+        /// </summary>
+        public string Description { get; set; }
     }
 }

@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace RSignSDK.Models.MasterData
+﻿namespace RSignSDK.Models.MasterData
 {
-    internal class RSignStage
+    public class RSignStage
     {
+        /// <summary>
+        /// Uniquely identifies the RSign stage.
+        /// </summary>
+        public string ID { get; set; }
+
+        /// <summary>
+        /// Name or description of the RSign stage.
+        /// </summary>
+        public string Value { get; set; }
     }
 }

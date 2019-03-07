@@ -80,7 +80,6 @@
     <Compile Include="Models\MasterData\ExpiryType.cs" />
     <Compile Include="Models\MasterData\Font.cs" />
     <Compile Include="Models\MasterData\MailTemplate.cs" />
-    <Compile Include="Models\MasterData\MasterData.cs" />
     <Compile Include="Models\MasterData\MasterDataList.cs" />
     <Compile Include="Models\MasterData\MaxCharacter.cs" />
     <Compile Include="Models\MasterData\RecipientType.cs" />
@@ -89,7 +88,6 @@
     <Compile Include="Models\MasterData\SettingsForType.cs" />
     <Compile Include="Models\MasterData\SettingsKeyConfig.cs" />
     <Compile Include="Models\MasterData\ShowSettingsTab.cs" />
-    <Compile Include="Models\MasterData\SignatureFont.cs" />
     <Compile Include="Models\MasterData\SignatureType.cs" />
     <Compile Include="Models\MasterData\SignFontStyle.cs" />
     <Compile Include="Models\MasterData\StatusCode.cs" />

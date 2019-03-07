@@ -9,5 +9,7 @@ namespace RSignSDK.Contracts
         IEnumerable<DateFormat> GetDateFormats();
 
         IEnumerable<Font> GetFonts();
+
+        IEnumerable<string> GetSignatureFonts();
     }
 }

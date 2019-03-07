@@ -1,6 +1,6 @@
 ﻿namespace RSignSDK.Models.MasterData
 {
-    public class DropDownOption : MasterData
+    public class DropDownOption
     {
         /// <summary>
         /// Uniquely identifies the drop down option.

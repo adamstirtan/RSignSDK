@@ -1,11 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace RSignSDK.Models.MasterData
 {
-    class UserType
+    public class UserType
     {
+        /// <summary>
+        /// Uniquely identifies the user type.
+        /// </summary>
+        public string ID { get; set; }
+
+        /// <summary>
+        /// Name or description of the user type.
+        /// </summary>
+        public Guid Value { get; set; }
     }
 }

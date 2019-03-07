@@ -1,11 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace RSignSDK.Models.MasterData
 {
-    class SignatureType
+    public class SignatureType
     {
+        /// <summary>
+        /// Uniquely identifies the signature type.
+        /// </summary>
+        public string ID { get; set; }
+
+        /// <summary>
+        /// Name or description of the signature type.
+        /// </summary>
+        public Guid Value { get; set; }
     }
 }

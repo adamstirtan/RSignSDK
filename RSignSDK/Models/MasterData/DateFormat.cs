@@ -2,7 +2,7 @@
 
 namespace RSignSDK.Models.MasterData
 {
-    public class DateFormat : MasterData
+    public class DateFormat
     {
         /// <summary>
         /// Uniquely identifies the date format.

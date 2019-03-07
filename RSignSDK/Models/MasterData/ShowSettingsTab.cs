@@ -1,11 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace RSignSDK.Models.MasterData
 {
-    class ShowSettingsTab
+    public class ShowSettingsTab
     {
+        /// <summary>
+        /// Uniquely identifies the setting.
+        /// </summary>
+        public string ID { get; set; }
+
+        /// <summary>
+        /// Name or description of the setting.
+        /// </summary>
+        public Guid Value { get; set; }
     }
 }

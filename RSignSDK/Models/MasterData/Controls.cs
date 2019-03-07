@@ -1,6 +1,6 @@
 ﻿namespace RSignSDK.Models.MasterData
 {
-    public class Controls : MasterData
+    public class Controls
     {
         /// <summary>
         /// Uniquely identifies the control.

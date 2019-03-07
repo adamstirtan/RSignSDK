@@ -2,7 +2,7 @@
 
 namespace RSignSDK.Models.MasterData
 {
-    public class MailTemplate : MasterData
+    public class MailTemplate
     {
         /// <summary>
         /// Uniquely identifies the mail template.

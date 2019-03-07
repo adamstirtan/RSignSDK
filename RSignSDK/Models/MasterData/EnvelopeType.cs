@@ -2,7 +2,7 @@
 
 namespace RSignSDK.Models.MasterData
 {
-    public class EnvelopeType : MasterData
+    public class EnvelopeType
     {
         /// <summary>
         /// Uniquely identifies the envelope type.

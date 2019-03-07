@@ -2,7 +2,7 @@
 
 namespace RSignSDK.Models.MasterData
 {
-    public class MaxCharacter : MasterData
+    public class MaxCharacter
     {
         /// <summary>
         /// Uniquely identifies the max character setting.

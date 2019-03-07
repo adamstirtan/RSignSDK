@@ -1,6 +1,6 @@
 ﻿namespace RSignSDK.Models.MasterData
 {
-    public class Font : MasterData
+    public class Font
     {
         /// <summary>
         /// Uniquely identifies the font.

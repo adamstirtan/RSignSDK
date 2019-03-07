@@ -2,7 +2,7 @@
 
 namespace RSignSDK.Models.MasterData
 {
-    public class ExpiryType : MasterData
+    public class ExpiryType
     {
         /// <summary>
         /// Uniquely identifies the expiry type.

@@ -1,6 +1,6 @@
 ﻿namespace RSignSDK.Models.MasterData
 {
-    public class EnvelopeStatus : MasterData
+    public class EnvelopeStatus
     {
         /// <summary>
         /// Uniquely identifies the drop down option.

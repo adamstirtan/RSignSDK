@@ -33,6 +33,27 @@ namespace RSignSDK
             _httpClient = new RSignHttpClient(ProductionApiUrl);
         }
 
+        private void Authenticate()
+        {
+            var response = _httpClient
+                .Post("Authentication/AuthenticateUser", JsonConvert.SerializeObject(_credentials));
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var authenticationResponse = JsonConvert
+                    .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
+
+                _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
+                _isAuthenticated = true;
+            }
+            else
+            {
+                throw new AuthenticationException("Invalid RSign API user name or password");
+            }
+        }
+
+        #region Master Data methods
+
         /// <summary>
         /// Returns the available date formats.
         /// </summary>
@@ -73,23 +94,26 @@ namespace RSignSDK
                 .AsEnumerable();
         }
 
-        private void Authenticate()
+        /// <summary>
+        /// Returns the available signature fonts.
+        /// </summary>
+        /// <returns>The response from the GetSignatureFonts API method, as returned by RPost.</returns>
+        /// /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
+        public IEnumerable<string> GetSignatureFonts()
         {
-            var response = _httpClient
-                .Post("Authentication/AuthenticateUser", JsonConvert.SerializeObject(_credentials));
-
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (!_isAuthenticated)
             {
-                var authenticationResponse = JsonConvert
-                    .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
+                Authenticate();
+            }
 
-                _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
-                _isAuthenticated = true;
-            }
-            else
-            {
-                throw new AuthenticationException("Invalid RSign API user name or password");
-            }
+            var response = _httpClient.Get("Dashboard/GetMasterData/SIGNATUREFONT");
+
+            return JsonConvert
+                .DeserializeObject<MasterDataList<string>>(response.Content.ReadAsStringAsync().Result)
+                .MasterList
+                .AsEnumerable();
         }
+
+        #endregion Master Data methods
     }
 }

@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace RSignSDK.Models.MasterData
+﻿namespace RSignSDK.Models.MasterData
 {
-    internal class TimeZone
+    public class TimeZone
     {
+        /// <summary>
+        /// Uniquely identifies the time zone.
+        /// </summary>
+        public string ID { get; set; }
+
+        /// <summary>
+        /// Name or description of the time zone.
+        /// </summary>
+        public string Value { get; set; }
     }
 }

@@ -1,11 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace RSignSDK.Models.MasterData
 {
-    class TextType
+    public class TextType
     {
+        /// <summary>
+        /// Uniquely identifies the text type.
+        /// </summary>
+        public Guid ID { get; set; }
+
+        /// <summary>
+        /// Name or description of the text type.
+        /// </summary>
+        public string Type { get; set; }
     }
 }

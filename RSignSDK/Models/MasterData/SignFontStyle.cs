@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace RSignSDK.Models.MasterData
+﻿namespace RSignSDK.Models.MasterData
 {
-    class SignFontStyle
+    public class SignFontStyle
     {
+        /// <summary>
+        /// Uniquely identifies the font style.
+        /// </summary>
+        public string ID { get; set; }
+
+        /// <summary>
+        /// Name or description of the font style.
+        /// </summary>
+        public string Value { get; set; }
     }
 }
