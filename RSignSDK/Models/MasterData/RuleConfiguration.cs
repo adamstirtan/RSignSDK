@@ -1,6 +1,6 @@
 ﻿namespace RSignSDK.Models.MasterData
 {
-    public class RuleConfig
+    public class RuleConfiguration
     {
         /// <summary>
         /// Uniquely identifies the rule.

@@ -2,7 +2,7 @@
 
 namespace RSignSDK.Models.MasterData
 {
-    public class SettingsKeyConfig
+    public class SettingsKeyConfiguration
     {
         /// <summary>
         /// Uniquely identifies the setting.

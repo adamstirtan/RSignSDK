@@ -30,11 +30,11 @@ namespace RSignSDK.Contracts
 
         IEnumerable<RSignStage> GetRSignStages();
 
-        IEnumerable<RuleConfig> GetRuleConfigs();
+        IEnumerable<RuleConfiguration> GetRuleConfigurations();
 
         IEnumerable<SettingsForType> GetSettingsForTypes();
 
-        IEnumerable<SettingsKeyConfig> GetSettingsKeyConfigs();
+        IEnumerable<SettingsKeyConfiguration> GetSettingsKeyConfigurations();
 
         IEnumerable<ShowSettingsTab> GetShowSettingsTabs();
 

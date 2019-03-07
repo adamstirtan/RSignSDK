@@ -83,9 +83,9 @@
     <Compile Include="Models\MasterData\MaxCharacter.cs" />
     <Compile Include="Models\MasterData\RecipientType.cs" />
     <Compile Include="Models\MasterData\RSignStage.cs" />
-    <Compile Include="Models\MasterData\RuleConfig.cs" />
+    <Compile Include="Models\MasterData\RuleConfiguration.cs" />
     <Compile Include="Models\MasterData\SettingsForType.cs" />
-    <Compile Include="Models\MasterData\SettingsKeyConfig.cs" />
+    <Compile Include="Models\MasterData\SettingsKeyConfiguration.cs" />
     <Compile Include="Models\MasterData\ShowSettingsTab.cs" />
     <Compile Include="Models\MasterData\SignatureType.cs" />
     <Compile Include="Models\MasterData\SignFontStyle.cs" />
