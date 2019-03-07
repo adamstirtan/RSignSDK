@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
@@ -14,11 +15,11 @@ namespace RSignSDK
     /// <summary>
     /// Implementation for accessing RSign API.
     /// </summary>
-    public class RSignAPI : IRSignAPI
+    public class RSignAPI : IRSignAPI, IDisposable
     {
         private bool _isAuthenticated;
 
-        private readonly IHttpClient _httpClient;
+        private readonly RSignHttpClient _httpClient;
         private readonly RSignAPICredentials _credentials;
 
         private const string ProductionApiUrl = "https://webapi.rsign.com/api/V1/";
@@ -54,6 +55,11 @@ namespace RSignSDK
 
         #region Master Data methods
 
+        public IEnumerable<Control> GetControls()
+        {
+            throw new System.NotImplementedException();
+        }
+
         /// <summary>
         /// Returns the available date formats.
         /// </summary>
@@ -72,6 +78,26 @@ namespace RSignSDK
                 .DeserializeObject<MasterDataList<DateFormat>>(response.Content.ReadAsStringAsync().Result)
                 .MasterList
                 .AsEnumerable();
+        }
+
+        public IEnumerable<DropDownOption> GetDropDownOptions()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<EnvelopeStatus> GetEnvelopeStatuses()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<EnvelopeType> GetEnvelopeTypes()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<ExpiryType> GetExpiryTypes()
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -94,6 +120,46 @@ namespace RSignSDK
                 .AsEnumerable();
         }
 
+        public IEnumerable<MailTemplate> GetMailTemplates()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<MaxCharacter> GetMaxCharacters()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<RecipientType> GetRecipientTypes()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<RSignStage> GetRSignStages()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<RuleConfig> GetRuleConfigs()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<SettingsForType> GetSettingsForTypes()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<SettingsKeyConfig> GetSettingsKeyConfigs()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<ShowSettingsTab> GetShowSettingsTabs()
+        {
+            throw new System.NotImplementedException();
+        }
+
         /// <summary>
         /// Returns the available signature fonts.
         /// </summary>
@@ -114,6 +180,49 @@ namespace RSignSDK
                 .AsEnumerable();
         }
 
+        public IEnumerable<SignatureType> GetSignatureTypes()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<SignFontStyle> GetSignFontStyles()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<StatusCode> GetStatusCodes()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<TextType> GetTextTypes()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<Models.MasterData.TimeZone> GetTimeZones()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<UserConstant> GetUserConstants()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<UserType> GetUserTypes()
+        {
+            throw new System.NotImplementedException();
+        }
+
         #endregion Master Data methods
+
+        public void Dispose()
+        {
+            if (_httpClient != null)
+            {
+                _httpClient.Dispose();
+            }
+        }
     }
 }

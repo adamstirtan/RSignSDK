@@ -10,36 +10,38 @@ namespace RSignSDK.Tests
         [TestMethod]
         public void GetDateFormatsTest()
         {
-            var sut = new RSignAPI(GetCredentials());
-
-            try
+            using (var sut = new RSignAPI(GetCredentials()))
             {
-                var list = sut.GetDateFormats();
+                try
+                {
+                    var list = sut.GetDateFormats();
 
-                Assert.IsNotNull(list);
-                Assert.AreNotEqual(list.Count(), 0);
-            }
-            catch (AuthenticationException)
-            {
-                Assert.Fail();
+                    Assert.IsNotNull(list);
+                    Assert.AreNotEqual(list.Count(), 0);
+                }
+                catch (AuthenticationException)
+                {
+                    Assert.Fail();
+                }
             }
         }
 
         [TestMethod]
         public void GetFontsTest()
         {
-            var sut = new RSignAPI(GetCredentials());
-
-            try
+            using (var sut = new RSignAPI(GetCredentials()))
             {
-                var list = sut.GetFonts();
+                try
+                {
+                    var list = sut.GetFonts();
 
-                Assert.IsNotNull(list);
-                Assert.AreNotEqual(list.Count(), 0);
-            }
-            catch (AuthenticationException)
-            {
-                Assert.Fail();
+                    Assert.IsNotNull(list);
+                    Assert.AreNotEqual(list.Count(), 0);
+                }
+                catch (AuthenticationException)
+                {
+                    Assert.Fail();
+                }
             }
         }
     }

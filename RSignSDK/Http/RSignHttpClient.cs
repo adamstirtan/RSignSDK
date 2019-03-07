@@ -4,11 +4,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 
-using RSignSDK.Contracts;
-
 namespace RSignSDK.Http
 {
-    internal sealed class RSignHttpClient : IHttpClient
+    internal sealed class RSignHttpClient : IDisposable
     {
         private readonly HttpClient _httpClient;
 
@@ -80,6 +78,14 @@ namespace RSignSDK.Http
             var result = stringBuilder.ToString();
 
             return result.EndsWith("&") ? result.Substring(0, result.Length - 1) : result;
+        }
+
+        public void Dispose()
+        {
+            if (_httpClient != null)
+            {
+                _httpClient.Dispose();
+            }
         }
     }
 }

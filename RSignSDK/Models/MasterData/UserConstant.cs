@@ -1,15 +1,15 @@
 ﻿namespace RSignSDK.Models.MasterData
 {
-    public class Controls
+    public class UserConstant
     {
         /// <summary>
-        /// Uniquely identifies the control.
+        /// Uniquely identifies the constant.
         /// </summary>
         public string ID { get; set; }
 
         /// <summary>
-        /// Name or description of the control.
+        /// Name or description of the constant.
         /// </summary>
-        public string ControlName { get; set; }
+        public string Value { get; set; }
     }
 }
