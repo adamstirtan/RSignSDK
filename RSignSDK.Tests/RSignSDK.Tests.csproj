@@ -58,7 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="credentials.example.json" />
-    <None Include="credentials.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
