@@ -21,16 +21,28 @@ namespace RSignSDK
 
         private readonly RSignHttpClient _httpClient;
         private readonly RSignAPICredentials _credentials;
+        private readonly RSignAPIOptions _options;
 
         private const string ProductionApiUrl = "https://webapi.rsign.com/api/V1/";
 
         /// <summary>
-        /// Constructs RSignAPI with credentials.
+        /// Constructs RSignAPI with credentials and default options.
         /// </summary>
-        /// <param name="credentials"></param>
+        /// <param name="credentials">Your RSign API credentials</param>
         public RSignAPI(RSignAPICredentials credentials)
+            : this(credentials, new DefaultRSignAPIOptions())
+        { }
+
+        /// <summary>
+        /// Constructs RSignAPI with credentials and options.
+        /// </summary>
+        /// <param name="credentials">Your RSign API credentials</param>
+        /// <param name="options">Your custom RSign API options</param>
+        public RSignAPI(RSignAPICredentials credentials, RSignAPIOptions options)
         {
             _credentials = credentials;
+            _options = options;
+
             _httpClient = new RSignHttpClient(ProductionApiUrl);
         }
 
@@ -46,6 +58,17 @@ namespace RSignSDK
 
                 _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
                 _isAuthenticated = true;
+
+                var dateFormats = GetDateFormats();
+                var expiryTypes = GetExpiryTypes();
+
+                _options.DefaultDateFormat.ID = dateFormats
+                    .First(x => _options.DefaultDateFormat.Description.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase))
+                    .ID;
+
+                _options.DefaultExpiryType.ID = expiryTypes
+                    .First(x => _options.DefaultExpiryType.Description.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase))
+                    .ID;
             }
             else
             {
