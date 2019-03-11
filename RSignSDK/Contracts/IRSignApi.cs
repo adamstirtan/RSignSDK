@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using RSignSDK.Models;
 using RSignSDK.Models.MasterData;
 
 namespace RSignSDK.Contracts
 {
-    public interface IRSignAPI
+    public interface IRSignAPI : IDisposable
     {
         IEnumerable<Template> GetTemplates();
+
+        IEnumerable<Rule> GetRules();
 
         #region Master Data
 
@@ -51,7 +54,7 @@ namespace RSignSDK.Contracts
 
         IEnumerable<TextType> GetTextTypes();
 
-        IEnumerable<TimeZone> GetTimeZones();
+        IEnumerable<Models.MasterData.TimeZone> GetTimeZones();
 
         IEnumerable<UserConstant> GetUserConstants();
 

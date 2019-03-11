@@ -16,7 +16,7 @@ namespace RSignSDK
     /// <summary>
     /// Implementation for accessing RSign API.
     /// </summary>
-    public class RSignAPI : IRSignAPI, IDisposable
+    public class RSignAPI : IRSignAPI
     {
         /// <summary>
         /// The default date format to use in RSign API calls.
@@ -90,6 +90,10 @@ namespace RSignSDK
             }
         }
 
+        /// <summary>
+        /// Returns the available templates.
+        /// </summary>
+        /// <returns>The response from the GetRemplates API method, as returned by RSign.</returns>
         public IEnumerable<Template> GetTemplates()
         {
             if (!_isAuthenticated)
@@ -107,12 +111,33 @@ namespace RSignSDK
                 .AsEnumerable();
         }
 
+        /// <summary>
+        /// Returns the available rules.
+        /// </summary>
+        /// <returns>The response from the GetRules API method, as returned by RSign.</returns>
+        public IEnumerable<Rule> GetRules()
+        {
+            if (!_isAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var envelopeType = _envelopeTypes.Single(x => x.Description.Equals("TemplateRule", StringComparison.InvariantCultureIgnoreCase));
+
+            var response = _httpClient.Get(string.Format("Template/GetConsumableListForEnvelope/{0}", envelopeType.EnvelopeTypeId));
+
+            return JsonConvert
+                .DeserializeObject<RuleList>(response.Content.ReadAsStringAsync().Result)
+                .Rules
+                .AsEnumerable();
+        }
+
         #region Master Data methods
 
         /// <summary>
         /// Returns the available controls.
         /// </summary>
-        /// <returns>The response from the GetControls API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetControls API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<Control> GetControls()
         {
@@ -132,7 +157,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available date formats.
         /// </summary>
-        /// <returns>The response from the GetDateFormats API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetDateFormats API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<DateFormat> GetDateFormats()
         {
@@ -152,7 +177,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available drop down options.
         /// </summary>
-        /// <returns>The response from the GetDropDownOptions API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetDropDownOptions API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<DropDownOption> GetDropDownOptions()
         {
@@ -172,7 +197,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available envelope statuses.
         /// </summary>
-        /// <returns>The response from the GetEnvelopeStatuses API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetEnvelopeStatuses API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<EnvelopeStatus> GetEnvelopeStatuses()
         {
@@ -192,7 +217,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available envelope types.
         /// </summary>
-        /// <returns>The response from the GetEnvelopeTypes API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetEnvelopeTypes API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<EnvelopeType> GetEnvelopeTypes()
         {
@@ -212,7 +237,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available expiry types.
         /// </summary>
-        /// <returns>The response from the GetExpiryTypes API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetExpiryTypes API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<ExpiryType> GetExpiryTypes()
         {
@@ -232,7 +257,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available fonts.
         /// </summary>
-        /// <returns>The response from the GetFonts API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetFonts API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<Font> GetFonts()
         {
@@ -252,7 +277,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available mail templates.
         /// </summary>
-        /// <returns>The response from the GetMailTemplates API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetMailTemplates API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<MailTemplate> GetMailTemplates()
         {
@@ -272,7 +297,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available max characters.
         /// </summary>
-        /// <returns>The response from the GetMaxCharacters API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetMaxCharacters API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<MaxCharacter> GetMaxCharacters()
         {
@@ -292,7 +317,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available recipient types.
         /// </summary>
-        /// <returns>The response from the GetRecipientTypes API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetRecipientTypes API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<RecipientType> GetRecipientTypes()
         {
@@ -312,7 +337,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available RSign stages.
         /// </summary>
-        /// <returns>The response from the GetRSignStages API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetRSignStages API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<RSignStage> GetRSignStages()
         {
@@ -332,7 +357,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available rule configurations.
         /// </summary>
-        /// <returns>The response from the GetRuleConfigurations API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetRuleConfigurations API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<RuleConfiguration> GetRuleConfigurations()
         {
@@ -352,7 +377,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available settings for types.
         /// </summary>
-        /// <returns>The response from the GetSettingsForTypes API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetSettingsForTypes API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<SettingsForType> GetSettingsForTypes()
         {
@@ -372,7 +397,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available settings key configurations.
         /// </summary>
-        /// <returns>The response from the GetSettingsKeyConfigurations API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetSettingsKeyConfigurations API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<SettingsKeyConfiguration> GetSettingsKeyConfigurations()
         {
@@ -392,7 +417,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available show settings tabs.
         /// </summary>
-        /// <returns>The response from the GetShowSettingsTabs API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetShowSettingsTabs API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<ShowSettingsTab> GetShowSettingsTabs()
         {
@@ -412,7 +437,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available signature fonts.
         /// </summary>
-        /// <returns>The response from the GetSignatureFonts API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetSignatureFonts API method, as returned by RSign.</returns>
         /// /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<string> GetSignatureFonts()
         {
@@ -432,7 +457,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available signature types.
         /// </summary>
-        /// <returns>The response from the GetSignatureTypes API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetSignatureTypes API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<SignatureType> GetSignatureTypes()
         {
@@ -452,7 +477,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available sign font styles.
         /// </summary>
-        /// <returns>The response from the GetSignFontStyles API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetSignFontStyles API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<SignFontStyle> GetSignFontStyles()
         {
@@ -472,7 +497,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available status codes.
         /// </summary>
-        /// <returns>The response from the GetStatusCodes API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetStatusCodes API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<StatusCode> GetStatusCodes()
         {
@@ -492,7 +517,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available text types.
         /// </summary>
-        /// <returns>The response from the GetTextTypes API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetTextTypes API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<TextType> GetTextTypes()
         {
@@ -512,7 +537,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available time zones.
         /// </summary>
-        /// <returns>The response from the GetTimeZones API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetTimeZones API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<Models.MasterData.TimeZone> GetTimeZones()
         {
@@ -532,7 +557,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available user constants.
         /// </summary>
-        /// <returns>The response from the GetUserConstants API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetUserConstants API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<UserConstant> GetUserConstants()
         {
@@ -552,7 +577,7 @@ namespace RSignSDK
         /// <summary>
         /// Returns the available user types.
         /// </summary>
-        /// <returns>The response from the GetUserTypes API method, as returned by RPost.</returns>
+        /// <returns>The response from the GetUserTypes API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<UserType> GetUserTypes()
         {

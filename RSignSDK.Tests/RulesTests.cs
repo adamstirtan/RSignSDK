@@ -2,19 +2,21 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using RSignSDK.Contracts;
+
 namespace RSignSDK.Tests
 {
     [TestClass]
-    public class TemplatesTest : BaseApiTest
+    public class RulesTests : BaseApiTest
     {
         [TestMethod]
         public void GetTemplatesTest()
         {
-            using (var sut = new RSignAPI(GetCredentials()))
+            using (IRSignAPI sut = new RSignAPI(GetCredentials()))
             {
                 try
                 {
-                    var list = sut.GetTemplates();
+                    var list = sut.GetRules();
 
                     Assert.IsNotNull(list);
                     Assert.AreNotEqual(list.Count(), 0);

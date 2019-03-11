@@ -85,6 +85,7 @@
     <Compile Include="Models\MasterData\RecipientType.cs" />
     <Compile Include="Models\MasterData\RSignStage.cs" />
     <Compile Include="Models\MasterData\RuleConfiguration.cs" />
+    <Compile Include="Models\RuleList.cs" />
     <Compile Include="Models\MasterData\SettingsForType.cs" />
     <Compile Include="Models\MasterData\SettingsKeyConfiguration.cs" />
     <Compile Include="Models\MasterData\ShowSettingsTab.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Models\MasterData\TimeZone.cs" />
     <Compile Include="Models\MasterData\UserConstant.cs" />
     <Compile Include="Models\MasterData\UserType.cs" />
+    <Compile Include="Models\Rule.cs" />
     <Compile Include="Models\Template.cs" />
     <Compile Include="Models\TemplateList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
