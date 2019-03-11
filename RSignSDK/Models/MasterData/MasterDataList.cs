@@ -2,7 +2,7 @@
 
 namespace RSignSDK.Models.MasterData
 {
-    public class MasterDataList<T> where T : class
+    internal class MasterDataList<T> where T : class
     {
         public IList<T> MasterList { get; set; }
     }

@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 
 using RSignSDK.Contracts;
 using RSignSDK.Http;
+using RSignSDK.Models;
 using RSignSDK.Models.Authentication;
 using RSignSDK.Models.MasterData;
 
@@ -17,11 +18,19 @@ namespace RSignSDK
     /// </summary>
     public class RSignAPI : IRSignAPI, IDisposable
     {
+        /// <summary>
+        /// The default date format to use in RSign API calls.
+        /// </summary>
         public DateFormat DateFormat { get; set; }
 
+        /// <summary>
+        /// The default expiry type to use in RSign API calls.
+        /// </summary>
         public ExpiryType ExpiryType { get; set; }
 
         private bool _isAuthenticated;
+
+        private HashSet<EnvelopeType> _envelopeTypes;
 
         private readonly RSignHttpClient _httpClient;
         private readonly RSignAPICredentials _credentials;
@@ -67,19 +76,35 @@ namespace RSignSDK
                 _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
                 _isAuthenticated = true;
 
-                var dateFormats = GetDateFormats();
-                var expiryTypes = GetExpiryTypes();
+                DateFormat = GetDateFormats()
+                    .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
 
-                DateFormat = dateFormats.First(x =>
-                    _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+                ExpiryType = GetExpiryTypes()
+                    .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
 
-                ExpiryType = expiryTypes.First(x =>
-                    _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+                _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
             }
             else
             {
                 throw new AuthenticationException("Invalid RSign API user name or password");
             }
+        }
+
+        public IEnumerable<Template> GetTemplates()
+        {
+            if (!_isAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var envelopeType = _envelopeTypes.Single(x => x.Description.Equals("Template", StringComparison.InvariantCultureIgnoreCase));
+
+            var response = _httpClient.Get(string.Format("Template/GetConsumableListForEnvelope/{0}", envelopeType.EnvelopeTypeId));
+
+            return JsonConvert
+                .DeserializeObject<TemplateList>(response.Content.ReadAsStringAsync().Result)
+                .Templates
+                .AsEnumerable();
         }
 
         #region Master Data methods

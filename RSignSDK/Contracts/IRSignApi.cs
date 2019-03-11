@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 
+using RSignSDK.Models;
 using RSignSDK.Models.MasterData;
 
 namespace RSignSDK.Contracts
 {
     public interface IRSignAPI
     {
+        IEnumerable<Template> GetTemplates();
+
         #region Master Data
 
         IEnumerable<Control> GetControls();
