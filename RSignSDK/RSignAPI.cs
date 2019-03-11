@@ -17,6 +17,10 @@ namespace RSignSDK
     /// </summary>
     public class RSignAPI : IRSignAPI, IDisposable
     {
+        public DateFormat DateFormat { get; set; }
+
+        public ExpiryType ExpiryType { get; set; }
+
         private bool _isAuthenticated;
 
         private readonly RSignHttpClient _httpClient;
@@ -30,7 +34,7 @@ namespace RSignSDK
         /// </summary>
         /// <param name="credentials">Your RSign API credentials</param>
         public RSignAPI(RSignAPICredentials credentials)
-            : this(credentials, new DefaultRSignAPIOptions())
+            : this(credentials, null)
         { }
 
         /// <summary>
@@ -41,7 +45,11 @@ namespace RSignSDK
         public RSignAPI(RSignAPICredentials credentials, RSignAPIOptions options)
         {
             _credentials = credentials;
-            _options = options;
+            _options = options ?? new RSignAPIOptions
+            {
+                DateFormat = "EU",
+                ExpiryType = "30 Days"
+            };
 
             _httpClient = new RSignHttpClient(ProductionApiUrl);
         }
@@ -62,13 +70,11 @@ namespace RSignSDK
                 var dateFormats = GetDateFormats();
                 var expiryTypes = GetExpiryTypes();
 
-                _options.DefaultDateFormat.ID = dateFormats
-                    .First(x => _options.DefaultDateFormat.Description.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase))
-                    .ID;
+                DateFormat = dateFormats.First(x =>
+                    _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
 
-                _options.DefaultExpiryType.ID = expiryTypes
-                    .First(x => _options.DefaultExpiryType.Description.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase))
-                    .ID;
+                ExpiryType = expiryTypes.First(x =>
+                    _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
             }
             else
             {

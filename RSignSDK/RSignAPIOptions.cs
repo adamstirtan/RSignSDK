@@ -1,10 +1,8 @@
-﻿using RSignSDK.Models.MasterData;
-
-namespace RSignSDK
+﻿namespace RSignSDK
 {
     public class RSignAPIOptions
     {
-        public DateFormat DefaultDateFormat { get; set; }
-        public ExpiryType DefaultExpiryType { get; set; }
+        public string DateFormat { get; set; }
+        public string ExpiryType { get; set; }
     }
 }

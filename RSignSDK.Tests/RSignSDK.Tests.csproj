@@ -52,6 +52,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthenticationTests.cs" />
     <Compile Include="BaseApiTest.cs" />
     <Compile Include="MasterDataTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

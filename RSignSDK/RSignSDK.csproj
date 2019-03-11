@@ -68,7 +68,6 @@
   <ItemGroup>
     <Compile Include="AuthenticationException.cs" />
     <Compile Include="Contracts\IRSignApi.cs" />
-    <Compile Include="DefaultRSignAPIOptions.cs" />
     <Compile Include="Http\RSignHttpClient.cs" />
     <Compile Include="Models\Authentication\AuthenticationResponse.cs" />
     <Compile Include="Models\Authentication\RSignAPICredentials.cs" />
