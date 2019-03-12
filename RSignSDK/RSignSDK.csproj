@@ -68,10 +68,14 @@
   <ItemGroup>
     <Compile Include="AuthenticationException.cs" />
     <Compile Include="Contracts\IRSignApi.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Http\RSignHttpClient.cs" />
     <Compile Include="Models\Authentication\AuthenticationResponse.cs" />
     <Compile Include="Models\Authentication\RSignAPICredentials.cs" />
     <Compile Include="Models\Envelope.cs" />
+    <Compile Include="Models\InitializeTemplateRequest.cs" />
+    <Compile Include="Models\InitializeTemplateResponse.cs" />
+    <Compile Include="Models\RSignLanguage.cs" />
     <Compile Include="Models\MasterData\Control.cs" />
     <Compile Include="Models\MasterData\DateFormat.cs" />
     <Compile Include="Models\MasterData\DropDownOption.cs" />

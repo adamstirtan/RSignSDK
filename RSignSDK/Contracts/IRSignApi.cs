@@ -8,6 +8,8 @@ namespace RSignSDK.Contracts
 {
     public interface IRSignAPI : IDisposable
     {
+        Template CreateTemplate(InitializeTemplateRequest request);
+
         IEnumerable<Template> GetTemplates();
 
         IEnumerable<Rule> GetRules();

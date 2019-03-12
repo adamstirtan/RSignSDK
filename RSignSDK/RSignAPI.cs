@@ -41,7 +41,7 @@ namespace RSignSDK
         /// <summary>
         /// Constructs RSignAPI with credentials and default options.
         /// </summary>
-        /// <param name="credentials">Your RSign API credentials</param>
+        /// <param name="credentials">Your RSign API credentials.</param>
         public RSignAPI(RSignAPICredentials credentials)
             : this(credentials, null)
         { }
@@ -49,8 +49,8 @@ namespace RSignSDK
         /// <summary>
         /// Constructs RSignAPI with credentials and options.
         /// </summary>
-        /// <param name="credentials">Your RSign API credentials</param>
-        /// <param name="options">Your custom RSign API options</param>
+        /// <param name="credentials">Your RSign API credentials.</param>
+        /// <param name="options">Your custom RSign API options.</param>
         public RSignAPI(RSignAPICredentials credentials, RSignAPIOptions options)
         {
             _credentials = credentials;
@@ -88,6 +88,27 @@ namespace RSignSDK
             {
                 throw new AuthenticationException("Invalid RSign API user name or password");
             }
+        }
+
+        /// <summary>
+        /// Creates a new template.
+        /// </summary>
+        /// <param name="request">Options for the template to be created.</param>
+        /// <returns>The newly created template.</returns>
+        public Template CreateTemplate(InitializeTemplateRequest request)
+        {
+            if (!_isAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Get("Template/InitializeTemplate");
+
+            var responseObject = JsonConvert.DeserializeObject<InitializeTemplateResponse>(response.Content.ReadAsStringAsync().Result);
+
+            // use ID to look up template and return it
+
+            return new Template();
         }
 
         /// <summary>
