@@ -105,10 +105,17 @@ namespace RSignSDK
 
             var response = _httpClient.Get(string.Format("Template/GetConsumableListForEnvelope/{0}", envelopeType.EnvelopeTypeId));
 
-            return JsonConvert
-                .DeserializeObject<TemplateList>(response.Content.ReadAsStringAsync().Result)
-                .Templates
-                .AsEnumerable();
+            var result = new List<Template>();
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                result = JsonConvert
+                    .DeserializeObject<TemplateList>(response.Content.ReadAsStringAsync().Result)
+                    .Templates
+                    .ToList();
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -126,10 +133,17 @@ namespace RSignSDK
 
             var response = _httpClient.Get(string.Format("Template/GetConsumableListForEnvelope/{0}", envelopeType.EnvelopeTypeId));
 
-            return JsonConvert
-                .DeserializeObject<RuleList>(response.Content.ReadAsStringAsync().Result)
-                .Rules
-                .AsEnumerable();
+            var result = new List<Rule>();
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                result = JsonConvert
+                    .DeserializeObject<RuleList>(response.Content.ReadAsStringAsync().Result)
+                    .Rules
+                    .ToList();
+            }
+
+            return result;
         }
 
         #region Master Data methods
