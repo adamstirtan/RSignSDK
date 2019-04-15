@@ -104,9 +104,14 @@ namespace RSignSDK
 
             var response = _httpClient.Get("Template/InitializeTemplate");
 
-            var responseObject = JsonConvert.DeserializeObject<InitializeTemplateResponse>(response.Content.ReadAsStringAsync().Result);
+            var templateResponse = JsonConvert.DeserializeObject<InitializeTemplateResponse>(response.Content.ReadAsStringAsync().Result);
 
+            // if something went wrong
             // use ID to look up template and return it
+
+            // api call to get template by ID
+
+            var template = JsonConvert.DeserializeObject<Template>(// api call to get template by ID)
 
             return new Template();
         }
