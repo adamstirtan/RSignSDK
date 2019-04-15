@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RSignSDK
 {
-    class InitializeTemplate
+    public class InitializeTemplate
     {
         private readonly RSignHttpClient _httpClient;
         private readonly RSignAPICredentials _credentials;
