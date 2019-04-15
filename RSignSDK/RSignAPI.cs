@@ -172,6 +172,45 @@ namespace RSignSDK
             return result;
         }
 
+        public IEnumerable<Template> InitializeTemplate(Guid ID, string HashID, long Code, string Name)
+        {
+            if (!_isAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var request = new InitializeTemplateRequest
+            {
+                DateFormatID = new Guid("577d1738-6891-45de-8481-e3353eb6a963"),
+                ExpiryTypeID = new Guid("ee01fd0a-b72e-4f62-b434-7081db5bb1db"),
+                PasswordRequiredToSign = false,
+                PasswordRequiredToOpen = false,
+                PasswordToSign = null,
+                PasswordToOpen = null,
+                IsTransparencyDocReq = false,
+                IsSignerAttachFileReq = false,
+                IpAddress = "176.35.180.22",
+                RecipientEmail = "lorcan.quinn@fernsoftware.com",
+                StaticTemplateID = "00000000-0000-0000-0000-000000000000",
+                SenderUserId = "00000000-0000-0000-0000-000000000000",
+                IsStatic = null,
+                IsAttachXMLDataReq = false,
+                IsSeparateMultipleDocumentsAfterSigningRequired = false,
+                IsConfirmationEmailReq = false,
+                IsDisclaimerInCertificate = false,
+                AccessAuthenticationType = null,
+                AccessAuthenticationPassword = null,
+                IsRandomPassword = false,
+                IsPasswordMailToSigner = false,
+                CultureInfo = "en-us",
+                CertificateSignature = null,
+            };
+
+            var response = _httpClient
+                .Post("Template/InitializeTemplate", JsonConvert.SerializeObject(_credentials));
+
+            var template = JsonConvert.DeserializeObject<InitializeTemplateResponse>(response);
+        }
         #region Master Data methods
 
         /// <summary>
