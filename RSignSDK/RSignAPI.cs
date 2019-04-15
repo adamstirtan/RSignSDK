@@ -241,7 +241,15 @@ namespace RSignSDK
                 Authenticate();
             }
 
-            
+            var request = new UseTemplateRequest
+            {
+                TemplateID = templateId,
+                IPAddress = "176.35.180.22",
+                DocID = envelopeId //This is EnvelopeId from Initilize Envelope
+            };
+
+            var response = _httpClient
+                .Post("Envelope/UseTemplate", JsonConvert.SerializeObject(_credentials));
         }
 
         #region Master Data methods
