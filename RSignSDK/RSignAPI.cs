@@ -209,8 +209,31 @@ namespace RSignSDK
             var response = _httpClient
                 .Post("Template/InitializeTemplate", JsonConvert.SerializeObject(_credentials));
 
-            var template = JsonConvert.DeserializeObject<InitializeTemplateResponse>(response);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var authenticationResponse = JsonConvert
+                    .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
+
+                _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
+                _isAuthenticated = true;
+
+                DateFormat = GetDateFormats()
+                    .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+                ExpiryType = GetExpiryTypes()
+                    .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+                _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
+            }
+            else
+            {
+                throw new AuthenticationException("Template could not be initialized. Please try again.");
+            }
+
+            var template = JsonConvert.DeserializeObject<InitializeTemplateResponse>(template.TemplateId);
+
         }
+
         #region Master Data methods
 
         /// <summary>
