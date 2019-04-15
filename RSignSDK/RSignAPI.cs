@@ -230,8 +230,18 @@ namespace RSignSDK
                 throw new AuthenticationException("Template could not be initialized. Please try again.");
             }
 
-            var template = JsonConvert.DeserializeObject<InitializeTemplateResponse>(template.TemplateId);
+            var template = JsonConvert.DeserializeObject<InitializeTemplateResponse>(new Guid(template.TemplateId));
 
+        }
+
+        public IEnumerable<Template> UseTemplate(string templateId, string envelopeId)
+        {
+            if (!_isAuthenticated)
+            {
+                Authenticate();
+            }
+
+            
         }
 
         #region Master Data methods
