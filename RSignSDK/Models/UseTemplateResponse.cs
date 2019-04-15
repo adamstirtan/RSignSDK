@@ -13,6 +13,6 @@ namespace RSignSDK.Models
         public string EnvelopeId { get; set; }
         public int TemplateCode { get; set; }
         public string EnvelopeTypeId { get; set; }
-        public EnvelopeDetails EnvelopeDetails { get; set; }
+        public Envelope EnvelopeDetails { get; set; }
     }
 }

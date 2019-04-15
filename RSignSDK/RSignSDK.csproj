@@ -73,7 +73,6 @@
     <Compile Include="Models\Authentication\AuthenticationResponse.cs" />
     <Compile Include="Models\Authentication\RSignAPICredentials.cs" />
     <Compile Include="Models\Envelope.cs" />
-    <Compile Include="Models\EnvelopeDetails.cs" />
     <Compile Include="Models\InitializeTemplateRequest.cs" />
     <Compile Include="Models\InitializeTemplateResponse.cs" />
     <Compile Include="Models\RSignLanguage.cs" />
