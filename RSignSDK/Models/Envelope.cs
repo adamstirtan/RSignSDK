@@ -33,9 +33,11 @@ namespace RSignSDK.Models
         public int TemplateCode { get; set; }
         public bool SignatureCertificateRequired { get; set; }
         public bool DownloadLinkOnManageRequired { get; set; }
-        public List<DocumentDetail> DocumentDetails { get; set; }
-        public List<RecipientList> RecipientList { get; set; }
+
+        //public List<DocumentDetail> DocumentDetails { get; set; }
+        //public List<RecipientList> RecipientList { get; set; }
         public object RoleList { get; set; }
+
         public string EDisplayCode { get; set; }
         public object PasswordKey { get; set; }
         public object PasswordKeySize { get; set; }
