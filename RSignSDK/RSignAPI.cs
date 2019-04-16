@@ -232,6 +232,7 @@ namespace RSignSDK
 
             var template = JsonConvert.DeserializeObject<InitializeTemplateResponse>(new Guid(template.TemplateId));
 
+            //need to pass TemplateCode
         }
 
         public IEnumerable<Template> UseTemplate(string templateId, string envelopeId)
@@ -250,6 +251,73 @@ namespace RSignSDK
 
             var response = _httpClient
                 .Post("Envelope/UseTemplate", JsonConvert.SerializeObject(_credentials));
+
+            //needs to extract - EnvelopeTypeId
+        }
+
+        public IEnumerable<Template> PrepareEnvelope(string envelopeId, int templateCode, string subject, string message)
+        {
+            if(!_isAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var request = new PrepareEnvelopeRequest
+            {
+                DateFormatID = new Guid ("577d1738-6891-45de-8481-e3353eb6a963"),
+                ExpiryTypeID = new Guid ("ee01fd0a-b72e-4f62-b434-7081db5bb1db"),
+                PasswordRequiredToSign = false,
+                PasswordRequiredtoOpen = false,
+                PasswordToSign = null,
+                PasswordToOpen = null,
+                IsTransparencyDocReq = false,
+                IsSequenceCheck = false,
+                EnvelopeID = envelopeId,
+                TemplateCode = templateCode,
+                Subject = subject,
+                Message = message, //this is the body of the email
+                IsSignerAttachFileReq = false,
+                IsSeparateMultipleDocumentsAfterSigningRequired = false,
+                IsAttachXMLDataReq = false,
+                IsDisclaimerInCertificate = false,
+                AccessAuthenticationType = null,
+                AccessAuthenticationPassword = null,
+                IsRandomPassword = false,
+                IsPasswordMailToSigner = true,
+                AccessAuthType = "3702fe94-d7db-45f4-86d7-8cc4791f7677",
+                CultureInfo = "en-us",
+                SendReminderIn = 0,
+                ThenSendReminderIn = 0,
+                SignatureCertificateRequired = true,
+                DownloadLinkRequired = true,
+                EnvelopeStage = "InitializeEnvelope"
+            };
+
+            var response = _httpClient
+                .Post("Envelope/PrepareEnvelope", JsonConvert.SerializeObject(_credentials));
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var authenticationResponse = JsonConvert
+                    .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
+
+                _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
+                _isAuthenticated = true;
+
+                DateFormat = GetDateFormats()
+                    .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+                ExpiryType = GetExpiryTypes()
+                    .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+                _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
+            }
+            else
+            {
+                throw new AuthenticationException("Template could not be initialized. Please try again.");
+            }
+
+            var template = JsonConvert.DeserializeObject<PrepareEnvelopeResponse>(template.TemplateId);
         }
 
         #region Master Data methods
