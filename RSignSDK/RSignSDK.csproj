@@ -75,6 +75,8 @@
     <Compile Include="Models\Envelope.cs" />
     <Compile Include="Models\InitializeTemplateRequest.cs" />
     <Compile Include="Models\InitializeTemplateResponse.cs" />
+    <Compile Include="Models\PrepareEnvelopeRequest.cs" />
+    <Compile Include="Models\PrepareEnvelopeResponse.cs" />
     <Compile Include="Models\RSignLanguage.cs" />
     <Compile Include="Models\MasterData\Control.cs" />
     <Compile Include="Models\MasterData\DateFormat.cs" />
