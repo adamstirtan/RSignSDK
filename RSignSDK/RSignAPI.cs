@@ -104,9 +104,14 @@ namespace RSignSDK
 
             var response = _httpClient.Get("Template/InitializeTemplate");
 
-            var responseObject = JsonConvert.DeserializeObject<InitializeTemplateResponse>(response.Content.ReadAsStringAsync().Result);
+            var templateResponse = JsonConvert.DeserializeObject<InitializeTemplateResponse>(response.Content.ReadAsStringAsync().Result);
 
+            // if something went wrong
             // use ID to look up template and return it
+
+            // api call to get template by ID
+
+            //var template = JsonConvert.DeserializeObject<Template>(// api call to get template by ID)
 
             return new Template();
         }
@@ -166,6 +171,199 @@ namespace RSignSDK
 
             return result;
         }
+
+        public IEnumerable<Template> InitializeTemplate(Guid ID, string HashID, long Code, string Name)
+        {
+            if (!_isAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var request = new InitializeTemplateRequest
+            {
+                DateFormatID = new Guid("577d1738-6891-45de-8481-e3353eb6a963"),
+                ExpiryTypeID = new Guid("ee01fd0a-b72e-4f62-b434-7081db5bb1db"),
+                PasswordRequiredToSign = false,
+                PasswordRequiredToOpen = false,
+                PasswordToSign = null,
+                PasswordToOpen = null,
+                IsTransparencyDocReq = false,
+                IsSignerAttachFileReq = false,
+                IpAddress = "176.35.180.22",
+                RecipientEmail = "lorcan.quinn@fernsoftware.com",
+                StaticTemplateID = "00000000-0000-0000-0000-000000000000",
+                SenderUserId = "00000000-0000-0000-0000-000000000000",
+                IsStatic = null,
+                IsAttachXMLDataReq = false,
+                IsSeparateMultipleDocumentsAfterSigningRequired = false,
+                IsConfirmationEmailReq = false,
+                IsDisclaimerInCertificate = false,
+                AccessAuthenticationType = null,
+                AccessAuthenticationPassword = null,
+                IsRandomPassword = false,
+                IsPasswordMailToSigner = false,
+                CultureInfo = "en-us",
+                CertificateSignature = null,
+            };
+
+            var response = _httpClient
+                .Post("Template/InitializeTemplate", JsonConvert.SerializeObject(_credentials));
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var authenticationResponse = JsonConvert
+                    .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
+
+                _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
+                _isAuthenticated = true;
+
+                DateFormat = GetDateFormats()
+                    .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+                ExpiryType = GetExpiryTypes()
+                    .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+                _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
+            }
+            else
+            {
+                throw new AuthenticationException("Template could not be initialized. Please try again.");
+            }
+
+            return null;
+
+            //var template = JsonConvert.DeserializeObject<InitializeTemplateResponse>(new Guid(template.TemplateId));
+
+            //need to pass TemplateCode
+        }
+
+        //public IEnumerable<Template> UseTemplate(string templateId, string envelopeId)
+        //{
+        //    if (!_isAuthenticated)
+        //    {
+        //        Authenticate();
+        //    }
+
+        //    var request = new UseTemplateRequest
+        //    {
+        //        TemplateID = templateId,
+        //        IPAddress = "176.35.180.22",
+        //        DocID = envelopeId //This is EnvelopeId from Initilize Envelope
+        //    };
+
+        //    var response = _httpClient
+        //        .Post("Envelope/UseTemplate", JsonConvert.SerializeObject(_credentials));
+
+        //    //needs to extract - EnvelopeTypeId
+        //}
+
+        //public IEnumerable<Template> PrepareEnvelope(string envelopeId, int templateCode, string subject, string message)
+        //{
+        //    if (!_isAuthenticated)
+        //    {
+        //        Authenticate();
+        //    }
+
+        //    var request = new PrepareEnvelopeRequest
+        //    {
+        //        DateFormatID = new Guid("577d1738-6891-45de-8481-e3353eb6a963"),
+        //        ExpiryTypeID = new Guid("ee01fd0a-b72e-4f62-b434-7081db5bb1db"),
+        //        PasswordRequiredToSign = false,
+        //        PasswordRequiredtoOpen = false,
+        //        PasswordToSign = null,
+        //        PasswordToOpen = null,
+        //        IsTransparencyDocReq = false,
+        //        IsSequenceCheck = false,
+        //        EnvelopeID = envelopeId,
+        //        TemplateCode = templateCode,
+        //        Subject = subject,
+        //        Message = message, //this is the body of the email
+        //        IsSignerAttachFileReq = false,
+        //        IsSeparateMultipleDocumentsAfterSigningRequired = false,
+        //        IsAttachXMLDataReq = false,
+        //        IsDisclaimerInCertificate = false,
+        //        AccessAuthenticationType = null,
+        //        AccessAuthenticationPassword = null,
+        //        IsRandomPassword = false,
+        //        IsPasswordMailToSigner = true,
+        //        AccessAuthType = "3702fe94-d7db-45f4-86d7-8cc4791f7677",
+        //        CultureInfo = "en-us",
+        //        SendReminderIn = 0,
+        //        ThenSendReminderIn = 0,
+        //        SignatureCertificateRequired = true,
+        //        DownloadLinkRequired = true,
+        //        EnvelopeStage = "InitializeEnvelope"
+        //    };
+
+        //    var response = _httpClient
+        //        .Post("Envelope/PrepareEnvelope", JsonConvert.SerializeObject(_credentials));
+
+        //    if (response.StatusCode == HttpStatusCode.OK)
+        //    {
+        //        var authenticationResponse = JsonConvert
+        //            .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
+
+        //        _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
+        //        _isAuthenticated = true;
+
+        //        DateFormat = GetDateFormats()
+        //            .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+        //        ExpiryType = GetExpiryTypes()
+        //            .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+        //        _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
+        //    }
+        //    else
+        //    {
+        //        throw new AuthenticationException("Template could not be initialized. Please try again.");
+        //    }
+
+        //    var template = JsonConvert.DeserializeObject<PrepareEnvelopeResponse>(template.TemplateId);
+        //}
+
+        //public IEnumerable<Template> SendEnvelope(string envelopeId, string userId)
+        //{
+        //    if (!_isAuthenticated)
+        //    {
+        //        Authenticate();
+        //    }
+
+        //    var request = new SendEnvelopeRequest
+        //    {
+        //        EnvelopeID = envelopeId,
+        //        UserID = userId,
+        //        EnvelopeTypeID = "e6f16aed-8544-4dcc-aeb4-639478761f4a",
+        //        Stage = "",
+        //        UserToken = "Icv-j1v1EQJJDtvWIzrGp7PWTccktTZiuOZAncmkfFEzSTs86yGOm7nlf8naGNa_1YwrAF7ZSLxBJirdszTxXJ68njBbMlFfZDKSTMeFfkmcOiW45oElvA02br1XRgmLW716g1r30XywWS4RJGypCIzqndCFurOFHRu4huEBgaY68nKx0V17XrlapKEEhJduhedSDcQ3Kf2bgLjBJJ-bo0G32S6t-nR_ifiLeimSo7nXBMgz9VD_1vSqkiL0I6zEp9iPbB9-J2t7BN279uUsn-3jgGPMNLjYTXZqxMlbAsAfUkavLvLHANsWo0omDD1RzmXObFnAkfRfFivOKQrYXDVsdLb9QbpT096pVN9tbFE-jByoyRtX9D-HWR5kGjeWsRKVcEcVvb7XbhUuP71BoVDYhTwosdeV0vV7MMYJ7qCvSvKim-7J3GBM2-6GfEpOGNNS4NevaNS-E2Y3zaJZrC6k2TKzrmIO_CfJL8D7dO6wTCi2II2MzHz9CVCzBUW_voRr7u33NEzZ0rPr3HffPOYAodv7sq6lS-07BAlIBww",
+        //        IpAddress = "176.35.180.22",
+        //        Controls = null
+        //    };
+
+        //    var response = _httpClient
+        //        .Post("Envelope/SendEnvelope", JsonConvert.SerializeObject(_credentials));
+
+        //    if (response.StatusCode == HttpStatusCode.OK)
+        //    {
+        //        var authenticationResponse = JsonConvert
+        //            .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
+
+        //        _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
+        //        _isAuthenticated = true;
+
+        //        DateFormat = GetDateFormats()
+        //            .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+        //        ExpiryType = GetExpiryTypes()
+        //            .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+        //        _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
+        //    }
+        //    else
+        //    {
+        //        throw new AuthenticationException("Template could not be initialized. Please try again.");
+        //    }
+        //}
 
         #region Master Data methods
 

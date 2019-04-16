@@ -75,6 +75,8 @@
     <Compile Include="Models\Envelope.cs" />
     <Compile Include="Models\InitializeTemplateRequest.cs" />
     <Compile Include="Models\InitializeTemplateResponse.cs" />
+    <Compile Include="Models\PrepareEnvelopeRequest.cs" />
+    <Compile Include="Models\PrepareEnvelopeResponse.cs" />
     <Compile Include="Models\RSignLanguage.cs" />
     <Compile Include="Models\MasterData\Control.cs" />
     <Compile Include="Models\MasterData\DateFormat.cs" />
@@ -101,8 +103,12 @@
     <Compile Include="Models\MasterData\UserConstant.cs" />
     <Compile Include="Models\MasterData\UserType.cs" />
     <Compile Include="Models\Rule.cs" />
+    <Compile Include="Models\SendEnvelopeRequest.cs" />
+    <Compile Include="Models\SendEnvelopeResponse.cs" />
     <Compile Include="Models\Template.cs" />
     <Compile Include="Models\TemplateList.cs" />
+    <Compile Include="Models\UseTemplateRequest.cs" />
+    <Compile Include="Models\UseTemplateResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RSignAPI.cs" />
     <Compile Include="RSignAPIOptions.cs" />
