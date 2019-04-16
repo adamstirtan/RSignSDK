@@ -71,9 +71,13 @@
     <Compile Include="Contracts\IRSignApi.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Http\RSignHttpClient.cs" />
+    <Compile Include="Models\AddUpdateReceipientResponse.cs" />
+    <Compile Include="Models\AddUpdateRecipientRequest.cs" />
     <Compile Include="Models\Authentication\AuthenticationResponse.cs" />
     <Compile Include="Models\Authentication\RSignAPICredentials.cs" />
     <Compile Include="Models\Envelope.cs" />
+    <Compile Include="Models\InitializeEnvelopeResponse.cs" />
+    <Compile Include="Models\InitializeEnvelopeRequest.cs" />
     <Compile Include="Models\InitializeTemplateRequest.cs" />
     <Compile Include="Models\InitializeTemplateResponse.cs" />
     <Compile Include="Models\PrepareEnvelopeRequest.cs" />
