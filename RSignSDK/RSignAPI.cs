@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+
 using Newtonsoft.Json;
 
 using RSignSDK.Contracts;
@@ -23,6 +24,7 @@ namespace RSignSDK
         private HashSet<EnvelopeType> _envelopeTypes;
         private DateFormat _dateFormat;
         private ExpiryType _expiryType;
+        private string _ipAddress;
 
         private readonly RSignHttpClient _httpClient;
         private readonly RSignAPICredentials _credentials;
@@ -53,6 +55,8 @@ namespace RSignSDK
             };
 
             _httpClient = new RSignHttpClient(ProductionApiUrl);
+
+            _ipAddress = GetComputerIPAddress();
         }
 
         private void Authenticate()
@@ -90,7 +94,15 @@ namespace RSignSDK
         /// <returns>The response from the InitializeEnvelope API method, as returned by RSign.</returns>
         public InitializeEnvelopeResponse InitializeEnvelope(InitializeEnvelopeRequest request)
         {
-            throw new NotImplementedException();
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Post("Envelope/InitializeEnvelope", JsonConvert.SerializeObject(request));
+
+            return JsonConvert
+                .DeserializeObject<InitializeEnvelopeResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
         /// <summary>
@@ -188,71 +200,6 @@ namespace RSignSDK
 
             return result;
         }
-
-        //public IEnumerable<Template> InitializeTemplate(Guid ID, string HashID, long Code, string Name)
-        //{
-        //    if (!IsAuthenticated)
-        //    {
-        //        Authenticate();
-        //    }
-
-        //    var request = new InitializeTemplateRequest
-        //    {
-        //        DateFormatID = new Guid("577d1738-6891-45de-8481-e3353eb6a963"),
-        //        ExpiryTypeID = new Guid("ee01fd0a-b72e-4f62-b434-7081db5bb1db"),
-        //        PasswordRequiredToSign = false,
-        //        PasswordRequiredToOpen = false,
-        //        PasswordToSign = null,
-        //        PasswordToOpen = null,
-        //        IsTransparencyDocReq = false,
-        //        IsSignerAttachFileReq = false,
-        //        IpAddress = "176.35.180.22",
-        //        RecipientEmail = "lorcan.quinn@fernsoftware.com",
-        //        StaticTemplateID = "00000000-0000-0000-0000-000000000000",
-        //        SenderUserId = "00000000-0000-0000-0000-000000000000",
-        //        IsStatic = null,
-        //        IsAttachXMLDataReq = false,
-        //        IsSeparateMultipleDocumentsAfterSigningRequired = false,
-        //        IsConfirmationEmailReq = false,
-        //        IsDisclaimerInCertificate = false,
-        //        AccessAuthenticationType = null,
-        //        AccessAuthenticationPassword = null,
-        //        IsRandomPassword = false,
-        //        IsPasswordMailToSigner = false,
-        //        CultureInfo = "en-us",
-        //        CertificateSignature = null,
-        //    };
-
-        //    var response = _httpClient
-        //        .Post("Template/InitializeTemplate", JsonConvert.SerializeObject(_credentials));
-
-        //    if (response.StatusCode == HttpStatusCode.OK)
-        //    {
-        //        var authenticationResponse = JsonConvert
-        //            .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
-
-        //        _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
-        //        IsAuthenticated = true;
-
-        //        DateFormat = GetDateFormats()
-        //            .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-        //        ExpiryType = GetExpiryTypes()
-        //            .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-        //        _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
-        //    }
-        //    else
-        //    {
-        //        throw new AuthenticationException("Template could not be initialized. Please try again.");
-        //    }
-
-        //    return null;
-
-        //    //var template = JsonConvert.DeserializeObject<InitializeTemplateResponse>(new Guid(template.TemplateId));
-
-        //    //need to pass TemplateCode
-        //}
 
         //public IEnumerable<Template> UseTemplate(string templateId, string envelopeId)
         //{
