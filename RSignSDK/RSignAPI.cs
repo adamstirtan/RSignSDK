@@ -112,7 +112,15 @@ namespace RSignSDK
         /// <returns>The response from the UseTemplate API method, as returned by RSign.</returns>
         public UseTemplateResponse UseTemplate(UseTemplateRequest request)
         {
-            throw new NotImplementedException();
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Post("Envelope/UseTemplate", JsonConvert.SerializeObject(request));
+
+            return JsonConvert
+                .DeserializeObject<UseTemplateResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
         /// <summary>

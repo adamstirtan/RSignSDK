@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace RSignSDK.Models
 {
-    public class Envelope
+    public class EnvelopeDetails
     {
         public string EnvelopeID { get; set; }
         public string EnvelopeCode { get; set; }
