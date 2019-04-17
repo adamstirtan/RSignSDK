@@ -60,7 +60,6 @@
     <Reference Include="System.Net.Http.WebRequest" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthenticationTests.cs" />
     <Compile Include="BaseApiTest.cs" />
     <Compile Include="ExtensionsTests.cs" />
     <Compile Include="MasterDataTests.cs" />

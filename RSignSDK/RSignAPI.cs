@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 
 using Newtonsoft.Json;
 
@@ -18,19 +19,12 @@ namespace RSignSDK
     /// </summary>
     public class RSignAPI : IRSignAPI
     {
-        /// <summary>
-        /// The default date format to use in RSign API calls.
-        /// </summary>
-        public DateFormat DateFormat { get; set; }
-
-        /// <summary>
-        /// The default expiry type to use in RSign API calls.
-        /// </summary>
-        public ExpiryType ExpiryType { get; set; }
-
-        private bool _isAuthenticated;
+        public bool IsAuthenticated { get; private set; }
 
         private HashSet<EnvelopeType> _envelopeTypes;
+        private DateFormat _dateFormat;
+        private ExpiryType _expiryType;
+        private string _ipAddress;
 
         private readonly RSignHttpClient _httpClient;
         private readonly RSignAPICredentials _credentials;
@@ -61,6 +55,8 @@ namespace RSignSDK
             };
 
             _httpClient = new RSignHttpClient(ProductionApiUrl);
+
+            _ipAddress = GetComputerIPAddress();
         }
 
         private void Authenticate()
@@ -74,15 +70,16 @@ namespace RSignSDK
                     .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
 
                 _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
-                _isAuthenticated = true;
 
-                DateFormat = GetDateFormats()
-                    .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-                ExpiryType = GetExpiryTypes()
-                    .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+                IsAuthenticated = true;
 
                 _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
+
+                _dateFormat = GetDateFormats()
+                    .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+                _expiryType = GetExpiryTypes()
+                    .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
             }
             else
             {
@@ -91,38 +88,78 @@ namespace RSignSDK
         }
 
         /// <summary>
-        /// Creates a new template.
+        /// Initializes a new envelope without recipients or templates attached.
         /// </summary>
-        /// <param name="request">Options for the template to be created.</param>
-        /// <returns>The newly created template.</returns>
-        public Template CreateTemplate(InitializeTemplateRequest request)
+        /// <param name="request">The parameters for the new envelope.</param>
+        /// <returns>The response from the InitializeEnvelope API method, as returned by RSign.</returns>
+        public InitializeEnvelopeResponse InitializeEnvelope(InitializeEnvelopeRequest request)
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
 
-            var response = _httpClient.Get("Template/InitializeTemplate");
+            var response = _httpClient.Post("Envelope/InitializeEnvelope", JsonConvert.SerializeObject(request));
 
-            var templateResponse = JsonConvert.DeserializeObject<InitializeTemplateResponse>(response.Content.ReadAsStringAsync().Result);
+            return JsonConvert
+                .DeserializeObject<InitializeEnvelopeResponse>(response.Content.ReadAsStringAsync().Result);
+        }
 
-            // if something went wrong
-            // use ID to look up template and return it
+        /// <summary>
+        /// Creates a template bound to an envelope without recipients attached.
+        /// </summary>
+        /// <param name="request">The parameters for the template.</param>
+        /// <returns>The response from the UseTemplate API method, as returned by RSign.</returns>
+        public UseTemplateResponse UseTemplate(UseTemplateRequest request)
+        {
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
 
-            // api call to get template by ID
+            var response = _httpClient.Post("Envelope/UseTemplate", JsonConvert.SerializeObject(request));
 
-            //var template = JsonConvert.DeserializeObject<Template>(// api call to get template by ID)
+            return JsonConvert
+                .DeserializeObject<UseTemplateResponse>(response.Content.ReadAsStringAsync().Result);
+        }
 
-            return new Template();
+        /// <summary>
+        /// Modifies the list of recipients on an envelope.
+        /// </summary>
+        /// <param name="request">The parameters for the recipient.</param>
+        /// <returns>The response from the AddUpdateRecipient API method, as returned by RSign.</returns>
+        public AddUpdateReceipientResponse AddUpdateRecipient(AddUpdateRecipientRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Sets final sending parameters on an envelope.
+        /// </summary>
+        /// <param name="request">The parameters for the preparation request.</param>
+        /// <returns>The response from the PrepareEnvelope API method, as returned by RSign.</returns>
+        public PrepareEnvelopeResponse PrepareEnvelope(PrepareEnvelopeRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Sends a prepared envelope with attached template to a list of recipients.
+        /// </summary>
+        /// <param name="request">The parameters for sending the envelope.</param>
+        /// <returns>The response from the SendEnvelope API method, as returned by RSign.</returns>
+        public SendEnvelopeResponse SendEnvelope(SendEnvelopeRequest request)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
         /// Returns the available templates.
         /// </summary>
-        /// <returns>The response from the GetRemplates API method, as returned by RSign.</returns>
+        /// <returns>The response from the GetTemplates API method, as returned by RSign.</returns>
         public IEnumerable<Template> GetTemplates()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -150,7 +187,7 @@ namespace RSignSDK
         /// <returns>The response from the GetRules API method, as returned by RSign.</returns>
         public IEnumerable<Rule> GetRules()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -172,74 +209,9 @@ namespace RSignSDK
             return result;
         }
 
-        public IEnumerable<Template> InitializeTemplate(Guid ID, string HashID, long Code, string Name)
-        {
-            if (!_isAuthenticated)
-            {
-                Authenticate();
-            }
-
-            var request = new InitializeTemplateRequest
-            {
-                DateFormatID = new Guid("577d1738-6891-45de-8481-e3353eb6a963"),
-                ExpiryTypeID = new Guid("ee01fd0a-b72e-4f62-b434-7081db5bb1db"),
-                PasswordRequiredToSign = false,
-                PasswordRequiredToOpen = false,
-                PasswordToSign = null,
-                PasswordToOpen = null,
-                IsTransparencyDocReq = false,
-                IsSignerAttachFileReq = false,
-                IpAddress = "176.35.180.22",
-                RecipientEmail = "lorcan.quinn@fernsoftware.com",
-                StaticTemplateID = "00000000-0000-0000-0000-000000000000",
-                SenderUserId = "00000000-0000-0000-0000-000000000000",
-                IsStatic = null,
-                IsAttachXMLDataReq = false,
-                IsSeparateMultipleDocumentsAfterSigningRequired = false,
-                IsConfirmationEmailReq = false,
-                IsDisclaimerInCertificate = false,
-                AccessAuthenticationType = null,
-                AccessAuthenticationPassword = null,
-                IsRandomPassword = false,
-                IsPasswordMailToSigner = false,
-                CultureInfo = "en-us",
-                CertificateSignature = null,
-            };
-
-            var response = _httpClient
-                .Post("Template/InitializeTemplate", JsonConvert.SerializeObject(_credentials));
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var authenticationResponse = JsonConvert
-                    .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
-
-                _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
-                _isAuthenticated = true;
-
-                DateFormat = GetDateFormats()
-                    .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-                ExpiryType = GetExpiryTypes()
-                    .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-                _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
-            }
-            else
-            {
-                throw new AuthenticationException("Template could not be initialized. Please try again.");
-            }
-
-            return null;
-
-            //var template = JsonConvert.DeserializeObject<InitializeTemplateResponse>(new Guid(template.TemplateId));
-
-            //need to pass TemplateCode
-        }
-
         //public IEnumerable<Template> UseTemplate(string templateId, string envelopeId)
         //{
-        //    if (!_isAuthenticated)
+        //    if (!IsAuthenticated)
         //    {
         //        Authenticate();
         //    }
@@ -259,7 +231,7 @@ namespace RSignSDK
 
         //public IEnumerable<Template> PrepareEnvelope(string envelopeId, int templateCode, string subject, string message)
         //{
-        //    if (!_isAuthenticated)
+        //    if (!IsAuthenticated)
         //    {
         //        Authenticate();
         //    }
@@ -304,7 +276,7 @@ namespace RSignSDK
         //            .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
 
         //        _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
-        //        _isAuthenticated = true;
+        //        IsAuthenticated = true;
 
         //        DateFormat = GetDateFormats()
         //            .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
@@ -324,7 +296,7 @@ namespace RSignSDK
 
         //public IEnumerable<Template> SendEnvelope(string envelopeId, string userId)
         //{
-        //    if (!_isAuthenticated)
+        //    if (!IsAuthenticated)
         //    {
         //        Authenticate();
         //    }
@@ -349,7 +321,7 @@ namespace RSignSDK
         //            .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
 
         //        _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
-        //        _isAuthenticated = true;
+        //        IsAuthenticated = true;
 
         //        DateFormat = GetDateFormats()
         //            .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
@@ -374,7 +346,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<Control> GetControls()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -394,7 +366,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<DateFormat> GetDateFormats()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -414,7 +386,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<DropDownOption> GetDropDownOptions()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -434,7 +406,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<EnvelopeStatus> GetEnvelopeStatuses()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -454,7 +426,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<EnvelopeType> GetEnvelopeTypes()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -474,7 +446,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<ExpiryType> GetExpiryTypes()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -494,7 +466,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<Font> GetFonts()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -514,7 +486,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<MailTemplate> GetMailTemplates()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -534,7 +506,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<MaxCharacter> GetMaxCharacters()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -554,7 +526,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<RecipientType> GetRecipientTypes()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -574,7 +546,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<RSignStage> GetRSignStages()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -594,7 +566,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<RuleConfiguration> GetRuleConfigurations()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -614,7 +586,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<SettingsForType> GetSettingsForTypes()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -634,7 +606,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<SettingsKeyConfiguration> GetSettingsKeyConfigurations()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -654,7 +626,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<ShowSettingsTab> GetShowSettingsTabs()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -674,7 +646,7 @@ namespace RSignSDK
         /// /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<string> GetSignatureFonts()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -694,7 +666,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<SignatureType> GetSignatureTypes()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -714,7 +686,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<SignFontStyle> GetSignFontStyles()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -734,7 +706,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<StatusCode> GetStatusCodes()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -754,7 +726,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<TextType> GetTextTypes()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -774,7 +746,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<Models.MasterData.TimeZone> GetTimeZones()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -794,7 +766,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<UserConstant> GetUserConstants()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -814,7 +786,7 @@ namespace RSignSDK
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
         public IEnumerable<UserType> GetUserTypes()
         {
-            if (!_isAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -828,6 +800,19 @@ namespace RSignSDK
         }
 
         #endregion Master Data methods
+
+        private string GetComputerIPAddress()
+        {
+            string ipAddress;
+
+            using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            {
+                socket.Connect("8.8.8.8", 65530);
+                ipAddress = (socket.LocalEndPoint as IPEndPoint).Address.ToString();
+            }
+
+            return ipAddress;
+        }
 
         public void Dispose()
         {

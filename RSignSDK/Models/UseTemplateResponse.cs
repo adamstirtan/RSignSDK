@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace RSignSDK.Models
+﻿namespace RSignSDK.Models
 {
     public class UseTemplateResponse
     {
@@ -13,6 +8,6 @@ namespace RSignSDK.Models
         public string EnvelopeId { get; set; }
         public int TemplateCode { get; set; }
         public string EnvelopeTypeId { get; set; }
-        public Envelope EnvelopeDetails { get; set; }
+        public EnvelopeDetails EnvelopeDetails { get; set; }
     }
 }
