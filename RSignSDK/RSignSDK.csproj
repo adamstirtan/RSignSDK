@@ -75,6 +75,7 @@
     <Compile Include="Models\AddUpdateRecipientRequest.cs" />
     <Compile Include="Models\Authentication\AuthenticationResponse.cs" />
     <Compile Include="Models\Authentication\RSignAPICredentials.cs" />
+    <Compile Include="Models\DocumentContentDetails.cs" />
     <Compile Include="Models\DocumentDetails.cs" />
     <Compile Include="Models\EnvelopeDetails.cs" />
     <Compile Include="Models\InitializeEnvelopeResponse.cs" />
