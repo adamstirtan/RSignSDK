@@ -75,6 +75,10 @@
     <Compile Include="Models\AddUpdateRecipientRequest.cs" />
     <Compile Include="Models\Authentication\AuthenticationResponse.cs" />
     <Compile Include="Models\Authentication\RSignAPICredentials.cs" />
+    <Compile Include="Models\ConditionalControlsDetails.cs" />
+    <Compile Include="Models\ControlStyle.cs" />
+    <Compile Include="Models\ControlStyleDetail.cs" />
+    <Compile Include="Models\DependentField.cs" />
     <Compile Include="Models\DocumentContentDetails.cs" />
     <Compile Include="Models\DocumentDetails.cs" />
     <Compile Include="Models\EnvelopeDetails.cs" />
@@ -84,7 +88,7 @@
     <Compile Include="Models\InitializeTemplateResponse.cs" />
     <Compile Include="Models\PrepareEnvelopeRequest.cs" />
     <Compile Include="Models\PrepareEnvelopeResponse.cs" />
-    <Compile Include="Models\RecipientList.cs" />
+    <Compile Include="Models\Recipient.cs" />
     <Compile Include="Models\RSignLanguage.cs" />
     <Compile Include="Models\MasterData\Control.cs" />
     <Compile Include="Models\MasterData\DateFormat.cs" />

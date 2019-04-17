@@ -1,5 +1,5 @@
 ﻿namespace RSignSDK.Models
 {
-    public class RecipientList
+    public class DependentField
     { }
 }

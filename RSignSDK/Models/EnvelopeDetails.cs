@@ -124,6 +124,6 @@ namespace RSignSDK.Models
 
         public List<DocumentDetails> DocumentDetails { get; set; }
 
-        public RecipientList RecipientList { get; set; }
+        public List<Recipient> RecipientList { get; set; }
     }
 }
