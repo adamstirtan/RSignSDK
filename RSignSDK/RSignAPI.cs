@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-
+using System.Net.Sockets;
 using Newtonsoft.Json;
 
 using RSignSDK.Contracts;
@@ -20,9 +20,9 @@ namespace RSignSDK
     {
         public bool IsAuthenticated { get; private set; }
 
+        private HashSet<EnvelopeType> _envelopeTypes;
         private DateFormat _dateFormat;
         private ExpiryType _expiryType;
-        private HashSet<EnvelopeType> _envelopeTypes;
 
         private readonly RSignHttpClient _httpClient;
         private readonly RSignAPICredentials _credentials;
@@ -69,44 +69,18 @@ namespace RSignSDK
 
                 IsAuthenticated = true;
 
+                _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
+
                 _dateFormat = GetDateFormats()
                     .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
 
                 _expiryType = GetExpiryTypes()
                     .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-                _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
             }
             else
             {
                 throw new AuthenticationException("Invalid RSign API user name or password");
             }
-        }
-
-        /// <summary>
-        /// Creates a new template.
-        /// </summary>
-        /// <param name="request">Options for the template to be created.</param>
-        /// <returns>The newly created template.</returns>
-        public Template CreateTemplate(InitializeTemplateRequest request)
-        {
-            if (IsAuthenticated)
-            {
-                Authenticate();
-            }
-
-            var response = _httpClient.Get("Template/InitializeTemplate");
-
-            var templateResponse = JsonConvert.DeserializeObject<InitializeTemplateResponse>(response.Content.ReadAsStringAsync().Result);
-
-            // if something went wrong
-            // use ID to look up template and return it
-
-            // api call to get template by ID
-
-            //var template = JsonConvert.DeserializeObject<Template>(// api call to get template by ID)
-
-            return new Template();
         }
 
         /// <summary>
@@ -871,6 +845,19 @@ namespace RSignSDK
         }
 
         #endregion Master Data methods
+
+        private string GetComputerIPAddress()
+        {
+            string ipAddress;
+
+            using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            {
+                socket.Connect("8.8.8.8", 65530);
+                ipAddress = (socket.LocalEndPoint as IPEndPoint).Address.ToString();
+            }
+
+            return ipAddress;
+        }
 
         public void Dispose()
         {
