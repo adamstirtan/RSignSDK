@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace RSignSDK.Models
+﻿namespace RSignSDK.Models
 {
     public class PrepareEnvelopeRequest
     {
-        public Guid DateFormatID { get; set; }
-        public Guid ExpiryTypeID { get; set; }
+        public string DateFormatID { get; set; }
+        public string ExpiryTypeID { get; set; }
         public bool PasswordRequiredToSign { get; set; }
         public bool PasswordRequiredtoOpen { get; set; }
         public bool? PasswordToSign { get; set; }
@@ -29,8 +24,8 @@ namespace RSignSDK.Models
         public bool IsPasswordMailToSigner { get; set; }
         public string AccessAuthType { get; set; }
         public string CultureInfo { get; set; }
-        public long SendReminderIn { get; set; }
-        public long ThenSendReminderIn { get; set; }
+        public int SendReminderIn { get; set; }
+        public int ThenSendReminderIn { get; set; }
         public bool SignatureCertificateRequired { get; set; }
         public bool DownloadLinkRequired { get; set; }
         public string EnvelopeStage { get; set; }

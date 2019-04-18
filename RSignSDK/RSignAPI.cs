@@ -141,8 +141,6 @@ namespace RSignSDK
 
             return JsonConvert
                 .DeserializeObject<AddUpdateRecipientResponse>(response.Content.ReadAsStringAsync().Result);
-
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -152,7 +150,15 @@ namespace RSignSDK
         /// <returns>The response from the PrepareEnvelope API method, as returned by RSign.</returns>
         public PrepareEnvelopeResponse PrepareEnvelope(PrepareEnvelopeRequest request)
         {
-            throw new NotImplementedException();
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Post("Envelope/PrepareEnvelope", JsonConvert.SerializeObject(request));
+
+            return JsonConvert
+                .DeserializeObject<PrepareEnvelopeResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
         /// <summary>
