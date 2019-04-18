@@ -130,6 +130,16 @@ namespace RSignSDK
         /// <returns>The response from the AddUpdateRecipient API method, as returned by RSign.</returns>
         public AddUpdateReceipientResponse AddUpdateRecipient(AddUpdateRecipientRequest request)
         {
+            if(!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Post("Envelope/AddUpdateRecipient", JsonConvert.SerializeObject(request));
+
+            return JsonConvert
+                .DeserializeObject<AddUpdateReceipientResponse>(response.Content.ReadAsStringAsync().Result);
+
             throw new NotImplementedException();
         }
 
