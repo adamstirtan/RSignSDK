@@ -13,6 +13,11 @@ namespace RSignSDK.Models
             SenderUserId = "00000000-0000-0000-0000-000000000000";
         }
 
+        internal void SetIpAddress(string ipAddress)
+        {
+            IpAddress = ipAddress;
+        }
+
         /// <summary>
         /// The name of the template.
         /// </summary>
@@ -66,7 +71,7 @@ namespace RSignSDK.Models
         /// <summary>
         /// The IP address of the originating request.
         /// </summary>
-        public string IpAddress { get; set; }
+        public string IpAddress { get; private set; }
 
         /// <summary>
         /// The recipient ID.
