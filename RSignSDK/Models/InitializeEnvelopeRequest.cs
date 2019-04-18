@@ -21,6 +21,11 @@ namespace RSignSDK.Models
             IsRandomPassword = false;
         }
 
+        internal void SetIpAddress(string ipAddress)
+        {
+            IpAddress = ipAddress;
+        }
+
         public DateFormat DateFormatID { get; set; }
 
         public ExpiryType ExpiryTypeID { get; set; }
@@ -37,7 +42,7 @@ namespace RSignSDK.Models
 
         public bool IsSignerAttachFileReq { get; set; }
 
-        public string IpAddress { get; set; }
+        public string IpAddress { get; private set; }
 
         public string RecipientEmail { get; set; }
 

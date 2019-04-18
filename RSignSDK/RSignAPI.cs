@@ -99,6 +99,8 @@ namespace RSignSDK
                 Authenticate();
             }
 
+            request.SetIpAddress(_ipAddress);
+
             var response = _httpClient.Post("Envelope/InitializeEnvelope", JsonConvert.SerializeObject(request));
 
             return JsonConvert
@@ -128,9 +130,9 @@ namespace RSignSDK
         /// </summary>
         /// <param name="request">The parameters for the recipient.</param>
         /// <returns>The response from the AddUpdateRecipient API method, as returned by RSign.</returns>
-        public AddUpdateReceipientResponse AddUpdateRecipient(AddUpdateRecipientRequest request)
+        public AddUpdateRecipientResponse AddUpdateRecipient(AddUpdateRecipientRequest request)
         {
-            if(!IsAuthenticated)
+            if (!IsAuthenticated)
             {
                 Authenticate();
             }
@@ -138,7 +140,7 @@ namespace RSignSDK
             var response = _httpClient.Post("Envelope/AddUpdateRecipient", JsonConvert.SerializeObject(request));
 
             return JsonConvert
-                .DeserializeObject<AddUpdateReceipientResponse>(response.Content.ReadAsStringAsync().Result);
+                .DeserializeObject<AddUpdateRecipientResponse>(response.Content.ReadAsStringAsync().Result);
 
             throw new NotImplementedException();
         }

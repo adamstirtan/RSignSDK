@@ -12,7 +12,7 @@ namespace RSignSDK.Contracts
 
         UseTemplateResponse UseTemplate(UseTemplateRequest request);
 
-        AddUpdateReceipientResponse AddUpdateRecipient(AddUpdateRecipientRequest request);
+        AddUpdateRecipientResponse AddUpdateRecipient(AddUpdateRecipientRequest request);
 
         PrepareEnvelopeResponse PrepareEnvelope(PrepareEnvelopeRequest request);
 
