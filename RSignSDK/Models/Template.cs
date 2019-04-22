@@ -7,7 +7,7 @@ namespace RSignSDK.Models
         /// <summary>
         /// Unique identifier for the template.
         /// </summary>
-        public Guid ID { get; set; }
+        public string ID { get; set; }
 
         /// <summary>
         /// Internally used RSign hash.

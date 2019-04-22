@@ -1,11 +1,4 @@
-﻿using System;
-using System.IO;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using Newtonsoft.Json;
-
-using RSignSDK.Models.Authentication;
+﻿using RSignSDK.Models.Authentication;
 
 namespace RSignSDK.Tests
 {
@@ -13,18 +6,10 @@ namespace RSignSDK.Tests
     {
         protected RSignAPICredentials GetCredentials()
         {
-            var configurationFilePath = Path.Combine(
-                Environment.CurrentDirectory, "..", "..", "credentials.json");
-
-            if (!File.Exists(configurationFilePath))
-            {
-                Assert.Fail("Could not find credentials.json");
-            }
-
-            using (var streamReader = new StreamReader(configurationFilePath))
-            {
-                return JsonConvert.DeserializeObject<RSignAPICredentials>(streamReader.ReadToEnd());
-            }
+            return new RSignAPICredentials(
+                "aaron.cullen@fernsoftware.com",
+                "Whatever1!",
+                "OQAxADgAQwBFADYAOQBEA");
         }
     }
 }

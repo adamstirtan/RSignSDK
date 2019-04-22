@@ -19,6 +19,7 @@ namespace RSignSDK.Models
             IsConfirmationEmailReq = false;
             IsDisclaimerInCertificate = false;
             IsRandomPassword = false;
+            CultureInfo = System.Globalization.CultureInfo.CurrentCulture.ToString();
         }
 
         internal void SetIpAddress(string ipAddress)
@@ -26,9 +27,19 @@ namespace RSignSDK.Models
             IpAddress = ipAddress;
         }
 
-        public DateFormat DateFormatID { get; set; }
+        internal void SetDateFormat(DateFormat dateFormat)
+        {
+            DateFormatID = dateFormat.ID.ToString();
+        }
 
-        public ExpiryType ExpiryTypeID { get; set; }
+        internal void SetExpiryType(ExpiryType expiryType)
+        {
+            ExpiryTypeID = expiryType.ID.ToString();
+        }
+
+        public string DateFormatID { get; private set; }
+
+        public string ExpiryTypeID { get; private set; }
 
         public bool PasswordRequiredToSign { get; set; }
 

@@ -1,6 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Linq;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using RSignSDK.Models;
-using System.Linq;
 
 namespace RSignSDK.Tests
 {
@@ -10,22 +12,30 @@ namespace RSignSDK.Tests
         [TestMethod]
         public void SendingEnvelopeTest()
         {
-            //using (var sut = new RSignAPI(GetCredentials()))
-            //{
-            //    var initializeEnvelopeResponse = sut.InitializeEnvelope(new InitializeEnvelopeRequest
-            //    {
-            //    });
+            using (var sut = new RSignAPI(GetCredentials()))
+            {
+                var initializeEnvelopeResponse = sut.InitializeEnvelope(new InitializeEnvelopeRequest
+                {
+                    RecipientEmail = "noreply@fernsoftware.com"
+                });
 
-            //    var templates = sut.GetTemplates();
-            //    var template = templates.Where(x => x.Name == "integration_test")
+                Assert.AreEqual(initializeEnvelopeResponse.StatusCode, 200);
+                Assert.IsNotNull(initializeEnvelopeResponse.EnvelopeId);
+                Assert.IsNotNull(initializeEnvelopeResponse.Message);
+                Assert.IsNotNull(initializeEnvelopeResponse.StatusMessage);
 
-            //    Assert.AreEqual(initializeEnvelopeResponse.StatusCode, "200");
+                var templates = sut.GetTemplates();
 
-            //    sut.UseTemplate(new UseTemplateRequest
-            //    {
-            //        TemplateID
-            //    })
-            //}
+                var template = templates.SingleOrDefault(x => x.Name == "Integration_Test");
+
+                Assert.IsNotNull(template);
+
+                var useTemplateResponse = sut.UseTemplate(new UseTemplateRequest
+                {
+                    TemplateID = template.ID,
+                    DocID = initializeEnvelopeResponse.EnvelopeId
+                });
+            }
         }
     }
 }

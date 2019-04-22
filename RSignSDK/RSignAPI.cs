@@ -99,6 +99,8 @@ namespace RSignSDK
                 Authenticate();
             }
 
+            request.SetDateFormat(_dateFormat);
+            request.SetExpiryType(_expiryType);
             request.SetIpAddress(_ipAddress);
 
             var response = _httpClient.Post("Envelope/InitializeEnvelope", JsonConvert.SerializeObject(request));
@@ -118,6 +120,8 @@ namespace RSignSDK
             {
                 Authenticate();
             }
+
+            request.SetIpAddress(_ipAddress);
 
             var response = _httpClient.Post("Envelope/UseTemplate", JsonConvert.SerializeObject(request));
 
@@ -196,17 +200,15 @@ namespace RSignSDK
 
             var response = _httpClient.Get(string.Format("Template/GetConsumableListForEnvelope/{0}", envelopeType.EnvelopeTypeId));
 
-            var result = new List<Template>();
-
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
-                result = JsonConvert
+                throw new Exception(response.StatusCode.ToString());
+            }
+
+            return JsonConvert
                     .DeserializeObject<TemplateList>(response.Content.ReadAsStringAsync().Result)
                     .Templates
                     .ToList();
-            }
-
-            return result;
         }
 
         /// <summary>
