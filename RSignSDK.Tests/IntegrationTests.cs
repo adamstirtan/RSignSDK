@@ -67,7 +67,15 @@ namespace RSignSDK.Tests
 
                 //var prepareEnvelopeResponse = sut.PrepareEnvelope(new PrepareEnvelopeRequest
                 //{
-                //})
+                //});
+
+                // Assertions
+
+                var sendEnvelopeResponse = sut.SendEnvelope(new SendEnvelopeRequest
+                {
+                });
+
+                // Assertions
             }
         }
     }
