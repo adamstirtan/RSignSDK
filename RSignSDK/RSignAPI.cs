@@ -22,6 +22,7 @@ namespace RSignSDK
         public bool IsAuthenticated { get; private set; }
 
         private HashSet<EnvelopeType> _envelopeTypes;
+        private HashSet<RecipientType> _recipientTypes;
         private DateFormat _dateFormat;
         private ExpiryType _expiryType;
         private string _ipAddress;
@@ -74,6 +75,7 @@ namespace RSignSDK
                 IsAuthenticated = true;
 
                 _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
+                _recipientTypes = new HashSet<RecipientType>(GetRecipientTypes());
 
                 _dateFormat = GetDateFormats()
                     .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
@@ -141,6 +143,9 @@ namespace RSignSDK
                 Authenticate();
             }
 
+            request.RecipientID = Guid.NewGuid().ToString();
+            request.SetRecipientType(_recipientTypes.Single(x => x.Description == "Signer"));
+
             var response = _httpClient.Post("Envelope/AddUpdateRecipient", JsonConvert.SerializeObject(request));
 
             return JsonConvert
@@ -199,11 +204,6 @@ namespace RSignSDK
             var envelopeType = _envelopeTypes.Single(x => x.Description.Equals("Template", StringComparison.InvariantCultureIgnoreCase));
 
             var response = _httpClient.Get(string.Format("Template/GetConsumableListForEnvelope/{0}", envelopeType.EnvelopeTypeId));
-
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new Exception(response.StatusCode.ToString());
-            }
 
             return JsonConvert
                     .DeserializeObject<TemplateList>(response.Content.ReadAsStringAsync().Result)

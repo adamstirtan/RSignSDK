@@ -2,7 +2,7 @@
 {
     public class AddUpdateRecipientResponse
     {
-        public string StatusCode { get; set; }
+        public int StatusCode { get; set; }
         public string StatusMessage { get; set; }
         public string Message { get; set; }
         public string EnvelopeID { get; set; }
