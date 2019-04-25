@@ -1,4 +1,6 @@
-﻿namespace RSignSDK.Models
+﻿using RSignSDK.Models.MasterData;
+
+namespace RSignSDK.Models
 {
     public sealed class PrepareEnvelopeRequest
     {
@@ -27,9 +29,19 @@
             EnvelopeStage = "InitializeUseRule";
         }
 
-        public string DateFormatID { get; set; }
+        internal void SetDateFormat(DateFormat dateFormat)
+        {
+            DateFormatID = dateFormat.ID.ToString();
+        }
 
-        public string ExpiryTypeID { get; set; }
+        internal void SetExpiryType(ExpiryType expiryType)
+        {
+            ExpiryTypeID = expiryType.ID.ToString();
+        }
+
+        public string DateFormatID { get; private set; }
+
+        public string ExpiryTypeID { get; private set; }
 
         public bool PasswordRequiredToSign { get; set; }
 

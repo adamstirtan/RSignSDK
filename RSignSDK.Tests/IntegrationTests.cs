@@ -65,11 +65,16 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(addUpdateRecipientResponse.RecipientID);
                 Assert.IsNotNull(addUpdateRecipientResponse.RecipientName);
 
-                //var prepareEnvelopeResponse = sut.PrepareEnvelope(new PrepareEnvelopeRequest
-                //{
-                //});
+                var prepareEnvelopeResponse = sut.PrepareEnvelope(new PrepareEnvelopeRequest
+                {
+                    EnvelopeID = useTemplateResponse.EnvelopeID,
+                });
 
-                // Assertions
+                Assert.IsNotNull(prepareEnvelopeResponse);
+                Assert.AreEqual(prepareEnvelopeResponse.StatusCode, 200);
+                Assert.IsNotNull(prepareEnvelopeResponse.OK);
+                Assert.IsNotNull(prepareEnvelopeResponse.Message);
+                Assert.IsNotNull(prepareEnvelopeResponse.EnvelopeId);
 
                 var sendEnvelopeResponse = sut.SendEnvelope(new SendEnvelopeRequest
                 {
