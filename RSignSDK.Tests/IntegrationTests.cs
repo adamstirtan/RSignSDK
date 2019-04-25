@@ -16,7 +16,7 @@ namespace RSignSDK.Tests
             {
                 var initializeEnvelopeResponse = sut.InitializeEnvelope(new InitializeEnvelopeRequest
                 {
-                    RecipientEmail = "noreply@fernsoftware.com"
+                    RecipientEmail = "lorcan.quinn@fernsoftware.com"
                 });
 
                 Assert.IsNotNull(initializeEnvelopeResponse);
@@ -53,8 +53,8 @@ namespace RSignSDK.Tests
                 var addUpdateRecipientResponse = sut.AddUpdateRecipient(new AddUpdateRecipientRequest
                 {
                     EnvelopeID = useTemplateResponse.EnvelopeID,
-                    RecipientName = "Integration Test",
-                    Email = "noreply@fernsoftware.com",
+                    RecipientName = "Fern Tester",
+                    Email = "test.sender.fern@fernsoftware.com",
                     Order = 1
                 });
 
@@ -68,6 +68,9 @@ namespace RSignSDK.Tests
                 var prepareEnvelopeResponse = sut.PrepareEnvelope(new PrepareEnvelopeRequest
                 {
                     EnvelopeID = useTemplateResponse.EnvelopeID,
+                    Subject = "Integration Testing V.01",
+                    Message = "Lorcans Test mail 25/04/19",
+                    TemplateCode = useTemplateResponse.TemplateCode
                 });
 
                 Assert.IsNotNull(prepareEnvelopeResponse);
@@ -79,6 +82,7 @@ namespace RSignSDK.Tests
                 var sendEnvelopeResponse = sut.SendEnvelope(new SendEnvelopeRequest
                 {
                     EnvelopeID = prepareEnvelopeResponse.EnvelopeId,
+                    
                 });
 
                 Assert.IsNotNull(sendEnvelopeResponse);

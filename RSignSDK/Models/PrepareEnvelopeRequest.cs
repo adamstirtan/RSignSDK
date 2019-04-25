@@ -8,8 +8,8 @@ namespace RSignSDK.Models
         {
             PasswordRequiredToSign = false;
             PasswordRequiredtoOpen = false;
-            PasswordToSign = null;
-            PasswordToOpen = null;
+            PasswordToSign = false;
+            PasswordToOpen = false;
             IsTransparencyDocReq = false;
             IsSequenceCheck = false;
             TemplateCode = 0;
@@ -20,13 +20,14 @@ namespace RSignSDK.Models
             AccessAuthenticationType = false;
             AccessAuthenticationPassword = false;
             IsRandomPassword = false;
-            IsPasswordMailToSigner = true;
+            IsPasswordMailToSigner = false;
+            AccessAuthType = "3702fe94-d7db-45f4-86d7-8cc4791f7677";
             CultureInfo = System.Globalization.CultureInfo.CurrentCulture.ToString();
-            SendReminderIn = 0;
-            ThenSendReminderIn = 0;
+            SendReminderIn = 1;
+            ThenSendReminderIn = 10;
             SignatureCertificateRequired = true;
             DownloadLinkRequired = true;
-            EnvelopeStage = "InitializeUseRule";
+            EnvelopeStage = "PrepareEnvelope";
         }
 
         internal void SetDateFormat(DateFormat dateFormat)
