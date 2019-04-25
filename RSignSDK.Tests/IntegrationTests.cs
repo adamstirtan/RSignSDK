@@ -78,9 +78,15 @@ namespace RSignSDK.Tests
 
                 var sendEnvelopeResponse = sut.SendEnvelope(new SendEnvelopeRequest
                 {
+                    EnvelopeID = prepareEnvelopeResponse.EnvelopeId,
                 });
 
-                // Assertions
+                Assert.IsNotNull(sendEnvelopeResponse);
+                Assert.IsNotNull(sendEnvelopeResponse.EnvelopeCode);
+                Assert.AreEqual(sendEnvelopeResponse.StatusCode, 200);
+                Assert.IsNotNull(sendEnvelopeResponse.StatusMessage);
+                Assert.IsNotNull(sendEnvelopeResponse.Message);
+                Assert.IsNotNull(sendEnvelopeResponse.EnvelopeId);
             }
         }
     }
