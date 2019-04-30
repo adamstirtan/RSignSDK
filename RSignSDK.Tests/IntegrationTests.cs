@@ -87,7 +87,7 @@ namespace RSignSDK.Tests
                     UserID = "552cc3b3-7e9f-4473-a804-20e6c1233ffa",
                     EnvelopeTypeID = "e6f16aed-8544-4dcc-aeb4-639478761f4a",
                     Stage = "",
-                    UserToken = "FiaLKJzkGYIr3AKZj1AkPfYLtmmY9m9INHCz13caM--fvPDPxgAs-qVnjW-MCAZ-eQxOEx8i3h6Nx9WcBys4O9QfoI3JDPILVtUIu-bVk6c-AtvkM5hvGRlQhKCQuJjGn9ZqNX1WAmjyoRa1yHjVdusfWuGT4DGwTYKQDIpjrP30gxxNyFCDj9aTW17fijrVGE820Sfs3vHBFrilgr872M3Rft6Vrycq4GvCfLXqjO4MXU_Dd3B36f_g0_EVsN-gICzkUxvRYxubVHc7XDd1fKywESahCOGnNw1dVxhFy8F3gCZL8PIlGudFuDf8bYuT0JKX3YhiCfcjFi85qZbaoQOuDyDd9dYuNT2AkVZEGQUf34msJWXdraehbrmhvXMXBKE9-1Gr4CaWjLKUBMhpi55iVD2ljxdEV2HnygVf3Eff1__FJHuBiuyZQ8tX9In8zz6iW_bSG0ZLV64YuOH59xbhKZMwbzErT6oWsruNgsh9BRB3vgfgDBadsi6wzFiGg0mM4plN12ZWdi6PmWjQ16n6Mj07FrNzPFcu7YFEgTc"
+                    UserToken = "WQezrImi_xAOW9sg11ACE98Lyosnt6bsiEwvsAUOhefRmWyUqzKxZYufH1-s2gzSE19lcVL4KdsWW7JWQR696LhNTXFC2hAl4S0Mg9s3XccxZcJJJdfR1CmoQQWiO9foJzgBypfNcAUq0920FUMzWLqIeKqAiefxF-hT7M6Ucl-gxfl0V0JQLA4a8baiPYcY4rLDq5S5q75H_XBX5dJXK0VPIYLvbectQIM_6McoDsRuUGu2X6gTPnE6Cjx5z8qQJiozBYXSBA3jawB7IpW7G0Vpmd4Xm4maiqvs84MtxhCMUTLz8rJ2Z7ZSyUPdUSLUoEs9bEfeRUzlDHqy-UccHg7Gp3Ypkky6dgNjf4D8eL0_EEtiu_HX1p7F3OqFhcAPRDwtkYM4tSW0F9__sHwRSrb6SNr3P8sCvR-I5c6YhNuqfbUgqB9vUo_CMq4RMpTQS6lAhMyYv5by-1ghhvbJVUTsQy4PKpgSJkTbZlrIbEZK2SGYwYHztGpwowMXpM6nQoZvWD2bBYiGPFbIGQIfFANGtRsnllJQn2Ttvwwumqk"
                 });
 
                 Assert.IsNotNull(sendEnvelopeResponse);
