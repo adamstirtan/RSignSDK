@@ -164,6 +164,9 @@ namespace RSignSDK
                 Authenticate();
             }
 
+            request.SetDateFormat(_dateFormat);
+            request.SetExpiryType(_expiryType);
+
             var response = _httpClient.Post("Envelope/PrepareEnvelope", JsonConvert.SerializeObject(request));
 
             return JsonConvert

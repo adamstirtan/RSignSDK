@@ -65,15 +65,13 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(addUpdateRecipientResponse.RecipientID);
                 Assert.IsNotNull(addUpdateRecipientResponse.RecipientName);
 
-                var req = new PrepareEnvelopeRequest
+                var prepareEnvelopeResponse = sut.PrepareEnvelope(new PrepareEnvelopeRequest
                 {
                     EnvelopeID = useTemplateResponse.EnvelopeID,
                     Message = "",
                     Subject = "",
                     TemplateCode = useTemplateResponse.TemplateCode
-                };
-
-                var prepareEnvelopeResponse = sut.PrepareEnvelope(req);
+                });
 
                 Assert.IsNotNull(prepareEnvelopeResponse);
                 Assert.AreEqual(prepareEnvelopeResponse.StatusCode, 200);
