@@ -65,13 +65,15 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(addUpdateRecipientResponse.RecipientID);
                 Assert.IsNotNull(addUpdateRecipientResponse.RecipientName);
 
-                var prepareEnvelopeResponse = sut.PrepareEnvelope(new PrepareEnvelopeRequest
+                var req = new PrepareEnvelopeRequest
                 {
                     EnvelopeID = useTemplateResponse.EnvelopeID,
-                    Subject = "Integration Testing V.01",
-                    Message = "Lorcans Test mail 25/04/19",
+                    Message = "",
+                    Subject = "",
                     TemplateCode = useTemplateResponse.TemplateCode
-                });
+                };
+
+                var prepareEnvelopeResponse = sut.PrepareEnvelope(req);
 
                 Assert.IsNotNull(prepareEnvelopeResponse);
                 Assert.AreEqual(prepareEnvelopeResponse.StatusCode, 200);
@@ -82,7 +84,10 @@ namespace RSignSDK.Tests
                 var sendEnvelopeResponse = sut.SendEnvelope(new SendEnvelopeRequest
                 {
                     EnvelopeID = prepareEnvelopeResponse.EnvelopeId,
-                    
+                    UserID = "552cc3b3-7e9f-4473-a804-20e6c1233ffa",
+                    EnvelopeTypeID = "e6f16aed-8544-4dcc-aeb4-639478761f4a",
+                    Stage = "",
+                    UserToken = "FiaLKJzkGYIr3AKZj1AkPfYLtmmY9m9INHCz13caM--fvPDPxgAs-qVnjW-MCAZ-eQxOEx8i3h6Nx9WcBys4O9QfoI3JDPILVtUIu-bVk6c-AtvkM5hvGRlQhKCQuJjGn9ZqNX1WAmjyoRa1yHjVdusfWuGT4DGwTYKQDIpjrP30gxxNyFCDj9aTW17fijrVGE820Sfs3vHBFrilgr872M3Rft6Vrycq4GvCfLXqjO4MXU_Dd3B36f_g0_EVsN-gICzkUxvRYxubVHc7XDd1fKywESahCOGnNw1dVxhFy8F3gCZL8PIlGudFuDf8bYuT0JKX3YhiCfcjFi85qZbaoQOuDyDd9dYuNT2AkVZEGQUf34msJWXdraehbrmhvXMXBKE9-1Gr4CaWjLKUBMhpi55iVD2ljxdEV2HnygVf3Eff1__FJHuBiuyZQ8tX9In8zz6iW_bSG0ZLV64YuOH59xbhKZMwbzErT6oWsruNgsh9BRB3vgfgDBadsi6wzFiGg0mM4plN12ZWdi6PmWjQ16n6Mj07FrNzPFcu7YFEgTc"
                 });
 
                 Assert.IsNotNull(sendEnvelopeResponse);
