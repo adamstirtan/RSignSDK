@@ -23,8 +23,8 @@ namespace RSignSDK.Models
             IsPasswordMailToSigner = false;
             AccessAuthType = "3702fe94-d7db-45f4-86d7-8cc4791f7677";
             CultureInfo = System.Globalization.CultureInfo.CurrentCulture.ToString();
-            SendReminderIn = 1;
-            ThenSendReminderIn = 10;
+            SendReminderIn = 0;
+            ThenSendReminderIn = 0;
             SignatureCertificateRequired = true;
             DownloadLinkRequired = true;
             EnvelopeStage = "InitializeEnvelope";
