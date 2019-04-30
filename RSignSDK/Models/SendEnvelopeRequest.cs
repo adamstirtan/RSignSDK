@@ -18,7 +18,7 @@ namespace RSignSDK.Models
 
         public string Stage { set; get; }
 
-        public string UserToken { get; set; }
+        public string UserToken { get; set; } //This is AuthToken. /Authentication/AuthenticateUser POST method required
 
         public string IpAddress { get; private set; }
     }
