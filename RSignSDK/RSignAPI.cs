@@ -143,9 +143,6 @@ namespace RSignSDK
                 Authenticate();
             }
 
-            request.RecipientID = Guid.NewGuid().ToString();
-            request.SetRecipientType(_recipientTypes.Single(x => x.Description == "Signer"));
-
             var response = _httpClient.Post("Envelope/AddUpdateRecipient", JsonConvert.SerializeObject(request));
 
             return JsonConvert

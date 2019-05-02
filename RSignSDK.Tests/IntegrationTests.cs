@@ -50,42 +50,46 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(useTemplateResponse.EnvelopeDetails.DocumentDetails);
                 Assert.AreEqual(1, useTemplateResponse.EnvelopeDetails.DocumentDetails.Count);
 
-                var addUpdateRecipientResponse = sut.AddUpdateRecipient(new AddUpdateRecipientRequest
+                foreach (var recipient in useTemplateResponse.EnvelopeDetails.RecipientList.Where(x => x.RecipientType == "Signer"))
                 {
-                    EnvelopeID = useTemplateResponse.EnvelopeID,
-                    RecipientName = "Fern Tester",
-                    Email = "test.sender.fern@fernsoftware.com",
-                    Order = 1
-                });
+                    var addUpdateRecipientResponse = sut.AddUpdateRecipient(new AddUpdateRecipientRequest
+                    {
+                        RecipientID = recipient.ID,
+                        EnvelopeID = useTemplateResponse.EnvelopeID,
+                        RecipientType = recipient.RecipientTypeID,
+                        RecipientName = "Fern Tester",
+                        Email = "lorcan.quinn@fernsoftware.com",
+                        Order = 1
+                    });
 
-                Assert.IsNotNull(addUpdateRecipientResponse);
-                Assert.AreEqual(addUpdateRecipientResponse.StatusCode, 200);
-                Assert.IsNotNull(addUpdateRecipientResponse.StatusMessage);
-                Assert.IsNotNull(addUpdateRecipientResponse.EnvelopeID);
-                Assert.IsNotNull(addUpdateRecipientResponse.RecipientID);
-                Assert.IsNotNull(addUpdateRecipientResponse.RecipientName);
+                    Assert.IsNotNull(addUpdateRecipientResponse);
+                    Assert.AreEqual(addUpdateRecipientResponse.StatusCode, 200);
+                    Assert.IsNotNull(addUpdateRecipientResponse.StatusMessage);
+                    Assert.IsNotNull(addUpdateRecipientResponse.EnvelopeID);
+                    Assert.IsNotNull(addUpdateRecipientResponse.RecipientID);
+                    Assert.IsNotNull(addUpdateRecipientResponse.RecipientName);
+                }
 
                 var prepareEnvelopeResponse = sut.PrepareEnvelope(new PrepareEnvelopeRequest
                 {
                     EnvelopeID = useTemplateResponse.EnvelopeID,
-                    Message = "",
-                    Subject = "",
+                    Message = "Integration Test Message",
+                    Subject = "Integration Test Subject",
                     TemplateCode = useTemplateResponse.TemplateCode
                 });
 
                 Assert.IsNotNull(prepareEnvelopeResponse);
                 Assert.AreEqual(prepareEnvelopeResponse.StatusCode, 200);
-                Assert.IsNotNull(prepareEnvelopeResponse.OK);
                 Assert.IsNotNull(prepareEnvelopeResponse.Message);
                 Assert.IsNotNull(prepareEnvelopeResponse.EnvelopeId);
 
                 var sendEnvelopeResponse = sut.SendEnvelope(new SendEnvelopeRequest
                 {
                     EnvelopeID = prepareEnvelopeResponse.EnvelopeId,
-                    UserID = "552cc3b3-7e9f-4473-a804-20e6c1233ffa",
-                    EnvelopeTypeID = "e6f16aed-8544-4dcc-aeb4-639478761f4a",
+                    UserID = useTemplateResponse.EnvelopeDetails.RecipientList.Single(x => x.RecipientType == "Sender").ID,
+                    EnvelopeTypeID = useTemplateResponse.EnvelopeTypeID,
                     Stage = "",
-                    UserToken = "WQezrImi_xAOW9sg11ACE98Lyosnt6bsiEwvsAUOhefRmWyUqzKxZYufH1-s2gzSE19lcVL4KdsWW7JWQR696LhNTXFC2hAl4S0Mg9s3XccxZcJJJdfR1CmoQQWiO9foJzgBypfNcAUq0920FUMzWLqIeKqAiefxF-hT7M6Ucl-gxfl0V0JQLA4a8baiPYcY4rLDq5S5q75H_XBX5dJXK0VPIYLvbectQIM_6McoDsRuUGu2X6gTPnE6Cjx5z8qQJiozBYXSBA3jawB7IpW7G0Vpmd4Xm4maiqvs84MtxhCMUTLz8rJ2Z7ZSyUPdUSLUoEs9bEfeRUzlDHqy-UccHg7Gp3Ypkky6dgNjf4D8eL0_EEtiu_HX1p7F3OqFhcAPRDwtkYM4tSW0F9__sHwRSrb6SNr3P8sCvR-I5c6YhNuqfbUgqB9vUo_CMq4RMpTQS6lAhMyYv5by-1ghhvbJVUTsQy4PKpgSJkTbZlrIbEZK2SGYwYHztGpwowMXpM6nQoZvWD2bBYiGPFbIGQIfFANGtRsnllJQn2Ttvwwumqk"
+                    UserToken = "N4mcy0P1jgdX4ZqZJVSrbaR4tunHSwFkVcVoJoDGsCWdusqgBHyzTWLjqyAXT7UBmSg3ZwToWFhY97LNCKMgAKRrhNmWTpX4uGP7eDg9aOZBrbsRKW_qUJZd-javZ2nkawFnRVwmWjbP1kGhOgVwaKOxa1V074dFfY_emMFEXSmEqaXlUkcTOQEdctLILrSxnN-X56-Z3PME3sQlmOWn6I2wAeTS8tWbdIN3uUsvd-JIh3rBcVz-76KYiQL-Y5FuhCDaDCC4L0ilaye2tn5h3iGg0CXd-PZARz7ANiLOnLpFed3V9G2fQSK6V89sleQZQWwQ1Mfbbzy6s_dADSBFlcwAqDIu762z-lOBZCtLNmqibuaxCHxrieJjoThhsV2yFRlUPm8fZXjD9wW0JmtvKxjeHUccwu-1m23jKwT4xcBqnnPhl9yTqrprK9va65N5EG4BMW9aeWqR6Bt6938zOXZT7QA-cJYlXNZzI3iatBref_0hXlMX75ODugmhbHwelz7w3iBNsfIuks4t6EXq7dTE_1-Ei8xGYzvHakOTVZA"
                 });
 
                 Assert.IsNotNull(sendEnvelopeResponse);
