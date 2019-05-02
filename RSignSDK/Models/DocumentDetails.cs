@@ -17,7 +17,7 @@ namespace RSignSDK.Models
 
         public DateTime UploadedDateTime { get; set; }
 
-        public long FileSize { get; set; }
+        public long? FileSize { get; set; }
 
         [JsonProperty(PropertyName = "documentContentDetails")]
         public List<DocumentContentDetails> DocumentContentDetails { get; set; }

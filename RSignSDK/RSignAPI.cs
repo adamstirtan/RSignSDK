@@ -22,6 +22,7 @@ namespace RSignSDK
         public bool IsAuthenticated { get; private set; }
 
         private HashSet<EnvelopeType> _envelopeTypes;
+        private HashSet<RecipientType> _recipientTypes;
         private DateFormat _dateFormat;
         private ExpiryType _expiryType;
         private string _ipAddress;
@@ -74,12 +75,15 @@ namespace RSignSDK
                 IsAuthenticated = true;
 
                 _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
+                _recipientTypes = new HashSet<RecipientType>(GetRecipientTypes());
 
                 _dateFormat = GetDateFormats()
                     .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
 
                 _expiryType = GetExpiryTypes()
                     .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+                
             }
             else
             {
@@ -99,6 +103,10 @@ namespace RSignSDK
                 Authenticate();
             }
 
+            request.SetDateFormat(_dateFormat);
+            request.SetExpiryType(_expiryType);
+            request.SetIpAddress(_ipAddress);
+
             var response = _httpClient.Post("Envelope/InitializeEnvelope", JsonConvert.SerializeObject(request));
 
             return JsonConvert
@@ -117,6 +125,8 @@ namespace RSignSDK
                 Authenticate();
             }
 
+            request.SetIpAddress(_ipAddress);
+
             var response = _httpClient.Post("Envelope/UseTemplate", JsonConvert.SerializeObject(request));
 
             return JsonConvert
@@ -128,9 +138,17 @@ namespace RSignSDK
         /// </summary>
         /// <param name="request">The parameters for the recipient.</param>
         /// <returns>The response from the AddUpdateRecipient API method, as returned by RSign.</returns>
-        public AddUpdateReceipientResponse AddUpdateRecipient(AddUpdateRecipientRequest request)
+        public AddUpdateRecipientResponse AddUpdateRecipient(AddUpdateRecipientRequest request)
         {
-            throw new NotImplementedException();
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Post("Envelope/AddUpdateRecipient", JsonConvert.SerializeObject(request));
+
+            return JsonConvert
+                .DeserializeObject<AddUpdateRecipientResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
         /// <summary>
@@ -140,7 +158,18 @@ namespace RSignSDK
         /// <returns>The response from the PrepareEnvelope API method, as returned by RSign.</returns>
         public PrepareEnvelopeResponse PrepareEnvelope(PrepareEnvelopeRequest request)
         {
-            throw new NotImplementedException();
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            request.SetDateFormat(_dateFormat);
+            request.SetExpiryType(_expiryType);
+
+            var response = _httpClient.Post("Envelope/PrepareEnvelope", JsonConvert.SerializeObject(request));
+
+            return JsonConvert
+                .DeserializeObject<PrepareEnvelopeResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
         /// <summary>
@@ -150,7 +179,17 @@ namespace RSignSDK
         /// <returns>The response from the SendEnvelope API method, as returned by RSign.</returns>
         public SendEnvelopeResponse SendEnvelope(SendEnvelopeRequest request)
         {
-            throw new NotImplementedException();
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            request.SetIpAddress(_ipAddress);
+
+            var response = _httpClient.Post("Envelope/SendEnvelope", JsonConvert.SerializeObject(request));
+
+            return JsonConvert
+                .DeserializeObject<SendEnvelopeResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
         /// <summary>
@@ -168,17 +207,10 @@ namespace RSignSDK
 
             var response = _httpClient.Get(string.Format("Template/GetConsumableListForEnvelope/{0}", envelopeType.EnvelopeTypeId));
 
-            var result = new List<Template>();
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                result = JsonConvert
+            return JsonConvert
                     .DeserializeObject<TemplateList>(response.Content.ReadAsStringAsync().Result)
                     .Templates
                     .ToList();
-            }
-
-            return result;
         }
 
         /// <summary>
@@ -208,134 +240,6 @@ namespace RSignSDK
 
             return result;
         }
-
-        //public IEnumerable<Template> UseTemplate(string templateId, string envelopeId)
-        //{
-        //    if (!IsAuthenticated)
-        //    {
-        //        Authenticate();
-        //    }
-
-        //    var request = new UseTemplateRequest
-        //    {
-        //        TemplateID = templateId,
-        //        IPAddress = "176.35.180.22",
-        //        DocID = envelopeId //This is EnvelopeId from Initilize Envelope
-        //    };
-
-        //    var response = _httpClient
-        //        .Post("Envelope/UseTemplate", JsonConvert.SerializeObject(_credentials));
-
-        //    //needs to extract - EnvelopeTypeId
-        //}
-
-        //public IEnumerable<Template> PrepareEnvelope(string envelopeId, int templateCode, string subject, string message)
-        //{
-        //    if (!IsAuthenticated)
-        //    {
-        //        Authenticate();
-        //    }
-
-        //    var request = new PrepareEnvelopeRequest
-        //    {
-        //        DateFormatID = new Guid("577d1738-6891-45de-8481-e3353eb6a963"),
-        //        ExpiryTypeID = new Guid("ee01fd0a-b72e-4f62-b434-7081db5bb1db"),
-        //        PasswordRequiredToSign = false,
-        //        PasswordRequiredtoOpen = false,
-        //        PasswordToSign = null,
-        //        PasswordToOpen = null,
-        //        IsTransparencyDocReq = false,
-        //        IsSequenceCheck = false,
-        //        EnvelopeID = envelopeId,
-        //        TemplateCode = templateCode,
-        //        Subject = subject,
-        //        Message = message, //this is the body of the email
-        //        IsSignerAttachFileReq = false,
-        //        IsSeparateMultipleDocumentsAfterSigningRequired = false,
-        //        IsAttachXMLDataReq = false,
-        //        IsDisclaimerInCertificate = false,
-        //        AccessAuthenticationType = null,
-        //        AccessAuthenticationPassword = null,
-        //        IsRandomPassword = false,
-        //        IsPasswordMailToSigner = true,
-        //        AccessAuthType = "3702fe94-d7db-45f4-86d7-8cc4791f7677",
-        //        CultureInfo = "en-us",
-        //        SendReminderIn = 0,
-        //        ThenSendReminderIn = 0,
-        //        SignatureCertificateRequired = true,
-        //        DownloadLinkRequired = true,
-        //        EnvelopeStage = "InitializeEnvelope"
-        //    };
-
-        //    var response = _httpClient
-        //        .Post("Envelope/PrepareEnvelope", JsonConvert.SerializeObject(_credentials));
-
-        //    if (response.StatusCode == HttpStatusCode.OK)
-        //    {
-        //        var authenticationResponse = JsonConvert
-        //            .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
-
-        //        _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
-        //        IsAuthenticated = true;
-
-        //        DateFormat = GetDateFormats()
-        //            .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-        //        ExpiryType = GetExpiryTypes()
-        //            .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-        //        _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
-        //    }
-        //    else
-        //    {
-        //        throw new AuthenticationException("Template could not be initialized. Please try again.");
-        //    }
-
-        //    var template = JsonConvert.DeserializeObject<PrepareEnvelopeResponse>(template.TemplateId);
-        //}
-
-        //public IEnumerable<Template> SendEnvelope(string envelopeId, string userId)
-        //{
-        //    if (!IsAuthenticated)
-        //    {
-        //        Authenticate();
-        //    }
-
-        //    var request = new SendEnvelopeRequest
-        //    {
-        //        EnvelopeID = envelopeId,
-        //        UserID = userId,
-        //        EnvelopeTypeID = "e6f16aed-8544-4dcc-aeb4-639478761f4a",
-        //        Stage = "",
-        //        UserToken = "Icv-j1v1EQJJDtvWIzrGp7PWTccktTZiuOZAncmkfFEzSTs86yGOm7nlf8naGNa_1YwrAF7ZSLxBJirdszTxXJ68njBbMlFfZDKSTMeFfkmcOiW45oElvA02br1XRgmLW716g1r30XywWS4RJGypCIzqndCFurOFHRu4huEBgaY68nKx0V17XrlapKEEhJduhedSDcQ3Kf2bgLjBJJ-bo0G32S6t-nR_ifiLeimSo7nXBMgz9VD_1vSqkiL0I6zEp9iPbB9-J2t7BN279uUsn-3jgGPMNLjYTXZqxMlbAsAfUkavLvLHANsWo0omDD1RzmXObFnAkfRfFivOKQrYXDVsdLb9QbpT096pVN9tbFE-jByoyRtX9D-HWR5kGjeWsRKVcEcVvb7XbhUuP71BoVDYhTwosdeV0vV7MMYJ7qCvSvKim-7J3GBM2-6GfEpOGNNS4NevaNS-E2Y3zaJZrC6k2TKzrmIO_CfJL8D7dO6wTCi2II2MzHz9CVCzBUW_voRr7u33NEzZ0rPr3HffPOYAodv7sq6lS-07BAlIBww",
-        //        IpAddress = "176.35.180.22",
-        //        Controls = null
-        //    };
-
-        //    var response = _httpClient
-        //        .Post("Envelope/SendEnvelope", JsonConvert.SerializeObject(_credentials));
-
-        //    if (response.StatusCode == HttpStatusCode.OK)
-        //    {
-        //        var authenticationResponse = JsonConvert
-        //            .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
-
-        //        _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
-        //        IsAuthenticated = true;
-
-        //        DateFormat = GetDateFormats()
-        //            .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-        //        ExpiryType = GetExpiryTypes()
-        //            .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-        //        _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
-        //    }
-        //    else
-        //    {
-        //        throw new AuthenticationException("Template could not be initialized. Please try again.");
-        //    }
-        //}
 
         #region Master Data methods
 

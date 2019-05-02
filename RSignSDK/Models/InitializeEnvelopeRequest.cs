@@ -19,11 +19,27 @@ namespace RSignSDK.Models
             IsConfirmationEmailReq = false;
             IsDisclaimerInCertificate = false;
             IsRandomPassword = false;
+            CultureInfo = System.Globalization.CultureInfo.CurrentCulture.ToString();
         }
 
-        public DateFormat DateFormatID { get; set; }
+        internal void SetIpAddress(string ipAddress)
+        {
+            IpAddress = ipAddress;
+        }
 
-        public ExpiryType ExpiryTypeID { get; set; }
+        internal void SetDateFormat(DateFormat dateFormat)
+        {
+            DateFormatID = dateFormat.ID.ToString();
+        }
+
+        internal void SetExpiryType(ExpiryType expiryType)
+        {
+            ExpiryTypeID = expiryType.ID.ToString();
+        }
+
+        public string DateFormatID { get; private set; }
+
+        public string ExpiryTypeID { get; private set; }
 
         public bool PasswordRequiredToSign { get; set; }
 
@@ -37,7 +53,7 @@ namespace RSignSDK.Models
 
         public bool IsSignerAttachFileReq { get; set; }
 
-        public string IpAddress { get; set; }
+        public string IpAddress { get; private set; }
 
         public string RecipientEmail { get; set; }
 
