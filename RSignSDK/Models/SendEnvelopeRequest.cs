@@ -21,5 +21,7 @@ namespace RSignSDK.Models
         public string UserToken { get; set; } //This is AuthToken. /Authentication/AuthenticateUser POST method required
 
         public string IpAddress { get; private set; }
+
+        public object Controls { get; set; }
     }
 }

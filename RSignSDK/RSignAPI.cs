@@ -82,6 +82,8 @@ namespace RSignSDK
 
                 _expiryType = GetExpiryTypes()
                     .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+                
             }
             else
             {
