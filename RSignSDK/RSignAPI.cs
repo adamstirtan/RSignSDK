@@ -17,7 +17,7 @@ namespace RSignSDK
     /// <summary>
     /// Implementation for accessing RSign API.
     /// </summary>
-    public class RSignAPI : IRSignAPI
+    public class RSignAPI : IRSignAPI, IRSignAPIInternal
     {
         private HashSet<EnvelopeType> _envelopeTypes;
         private DateFormat _dateFormat;
@@ -83,6 +83,11 @@ namespace RSignSDK
 
             _expiryType = GetExpiryTypes()
                 .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        public bool Send(string templateName, IEnumerable<string> recipients)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

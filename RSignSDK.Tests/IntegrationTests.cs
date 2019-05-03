@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using RSignSDK.Contracts;
 using RSignSDK.Models;
 
 namespace RSignSDK.Tests
@@ -10,9 +12,24 @@ namespace RSignSDK.Tests
     public class IntegrationTests : BaseApiTest
     {
         [TestMethod]
-        public void SendingEnvelopeTest()
+        public void PublicContractSendTest()
         {
-            using (var sut = new RSignAPI(GetCredentials()))
+            using (IRSignAPI sut = new RSignAPI(GetCredentials()))
+            {
+                var result = sut.Send("Integration_Test", new List<string>
+                {
+                    "adam.stirtan@fernsoftware.com",
+                    "lorcan.quinn@fernsoftware.com"
+                });
+
+                Assert.IsTrue(result);
+            }
+        }
+
+        [TestMethod]
+        public void InternalContractSendTest()
+        {
+            using (IRSignAPIInternal sut = new RSignAPI(GetCredentials()))
             {
                 var initializeEnvelopeResponse = sut.InitializeEnvelope(new InitializeEnvelopeRequest());
 
