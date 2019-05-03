@@ -22,7 +22,7 @@ namespace RSignSDK.Models
             IsRandomPassword = false;
             IsPasswordMailToSigner = false;
             AccessAuthType = "3702fe94-d7db-45f4-86d7-8cc4791f7677";
-            CultureInfo = System.Globalization.CultureInfo.CurrentCulture.ToString();
+            CultureInfo = "en-us";
             SendReminderIn = 0;
             ThenSendReminderIn = 0;
             SignatureCertificateRequired = true;
