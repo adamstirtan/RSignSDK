@@ -4,6 +4,11 @@ namespace RSignSDK.Models
 {
     public class SendEnvelopeRequest
     {
+        public SendEnvelopeRequest()
+        {
+            Stage = "";
+        }
+
         internal void SetIpAddress(string ipAddress)
         {
             IpAddress = ipAddress;
@@ -18,7 +23,7 @@ namespace RSignSDK.Models
 
         public string Stage { set; get; }
 
-        public string UserToken { get; set; } //This is AuthToken. /Authentication/AuthenticateUser POST method required
+        public string UserToken { get; set; }
 
         public string IpAddress { get; private set; }
 

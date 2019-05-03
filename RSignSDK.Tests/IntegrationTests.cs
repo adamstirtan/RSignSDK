@@ -14,10 +14,7 @@ namespace RSignSDK.Tests
         {
             using (var sut = new RSignAPI(GetCredentials()))
             {
-                var initializeEnvelopeResponse = sut.InitializeEnvelope(new InitializeEnvelopeRequest
-                {
-                    RecipientEmail = "lorcan.quinn@fernsoftware.com"
-                });
+                var initializeEnvelopeResponse = sut.InitializeEnvelope(new InitializeEnvelopeRequest());
 
                 Assert.IsNotNull(initializeEnvelopeResponse);
                 Assert.AreEqual(initializeEnvelopeResponse.StatusCode, 200);
@@ -57,8 +54,8 @@ namespace RSignSDK.Tests
                         RecipientID = recipient.ID,
                         EnvelopeID = useTemplateResponse.EnvelopeID,
                         RecipientType = recipient.RecipientTypeID,
-                        RecipientName = "Fern Tester",
-                        Email = "lorcan.quinn@fernsoftware.com",
+                        RecipientName = "Recipient",
+                        Email = "adam.stirtan@fernsoftware.com",
                         Order = 1
                     });
 
@@ -82,14 +79,11 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(prepareEnvelopeResponse.Message);
                 Assert.IsNotNull(prepareEnvelopeResponse.EnvelopeId);
 
-                // Note: Why do we have to re-send the UserToken? It's part of the HTTP header when you make the call. Seems redundant.
                 var sendEnvelopeResponse = sut.SendEnvelope(new SendEnvelopeRequest
                 {
-                    EnvelopeID = prepareEnvelopeResponse.EnvelopeId,
-                    UserID = "552CC3B3-7E9F-4473-A804-20E6C1233FFA",//useTemplateResponse.EnvelopeDetails.RecipientList.Single(x => x.RecipientType == "Sender").ID,
-                    EnvelopeTypeID = useTemplateResponse.EnvelopeTypeID,
-                    Stage = "",
-                    UserToken = "N4mcy0P1jgdX4ZqZJVSrbaR4tunHSwFkVcVoJoDGsCWdusqgBHyzTWLjqyAXT7UBmSg3ZwToWFhY97LNCKMgAKRrhNmWTpX4uGP7eDg9aOZBrbsRKW_qUJZd-javZ2nkawFnRVwmWjbP1kGhOgVwaKOxa1V074dFfY_emMFEXSmEqaXlUkcTOQEdctLILrSxnN-X56-Z3PME3sQlmOWn6I2wAeTS8tWbdIN3uUsvd-JIh3rBcVz-76KYiQL-Y5FuhCDaDCC4L0ilaye2tn5h3iGg0CXd-PZARz7ANiLOnLpFed3V9G2fQSK6V89sleQZQWwQ1Mfbbzy6s_dADSBFlcwAqDIu762z-lOBZCtLNmqibuaxCHxrieJjoThhsV2yFRlUPm8fZXjD9wW0JmtvKxjeHUccwu-1m23jKwT4xcBqnnPhl9yTqrprK9va65N5EG4BMW9aeWqR6Bt6938zOXZT7QA-cJYlXNZzI3iatBref_0hXlMX75ODugmhbHwelz7w3iBNsfIuks4t6EXq7dTE_1-Ei8xGYzvHakOTVZA"
+                    EnvelopeID = useTemplateResponse.EnvelopeID,
+                    UserID = useTemplateResponse.EnvelopeDetails.RecipientList.Single(x => x.RecipientType == "Sender").ID,
+                    EnvelopeTypeID = useTemplateResponse.EnvelopeTypeID
                 });
 
                 Assert.IsNotNull(sendEnvelopeResponse);

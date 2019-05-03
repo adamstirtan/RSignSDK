@@ -19,13 +19,11 @@ namespace RSignSDK
     /// </summary>
     public class RSignAPI : IRSignAPI
     {
-        public bool IsAuthenticated { get; private set; }
-
         private HashSet<EnvelopeType> _envelopeTypes;
-        private HashSet<RecipientType> _recipientTypes;
         private DateFormat _dateFormat;
         private ExpiryType _expiryType;
-        private string _ipAddress;
+
+        private readonly string _ipAddress;
 
         private readonly RSignHttpClient _httpClient;
         private readonly RSignAPICredentials _credentials;
@@ -38,7 +36,7 @@ namespace RSignSDK
         /// </summary>
         /// <param name="credentials">Your RSign API credentials.</param>
         public RSignAPI(RSignAPICredentials credentials)
-            : this(credentials, null)
+            : this(credentials, new RSignAPIOptions())
         { }
 
         /// <summary>
@@ -49,46 +47,42 @@ namespace RSignSDK
         public RSignAPI(RSignAPICredentials credentials, RSignAPIOptions options)
         {
             _credentials = credentials;
-            _options = options ?? new RSignAPIOptions
-            {
-                DateFormat = "EU",
-                ExpiryType = "30 Days"
-            };
+            _options = options;
 
             _httpClient = new RSignHttpClient(ProductionApiUrl);
 
             _ipAddress = GetComputerIPAddress();
         }
 
+        /// <summary>
+        /// Indicates whether this instance has been successfully authenticated.
+        /// </summary>
+        public bool IsAuthenticated { get; private set; }
+
         private void Authenticate()
         {
             var response = _httpClient
                 .Post("Authentication/AuthenticateUser", JsonConvert.SerializeObject(_credentials));
 
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var authenticationResponse = JsonConvert
-                    .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
-
-                _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
-
-                IsAuthenticated = true;
-
-                _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
-                _recipientTypes = new HashSet<RecipientType>(GetRecipientTypes());
-
-                _dateFormat = GetDateFormats()
-                    .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-                _expiryType = GetExpiryTypes()
-                    .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
-
-                
-            }
-            else
+            if (response.StatusCode != HttpStatusCode.OK)
             {
                 throw new AuthenticationException("Invalid RSign API user name or password");
             }
+
+            IsAuthenticated = true;
+
+            var authenticationResponse = JsonConvert
+                    .DeserializeObject<AuthenticationResponse>(response.Content.ReadAsStringAsync().Result);
+
+            _httpClient.SetAuthenticationToken(authenticationResponse.AuthToken);
+
+            _envelopeTypes = new HashSet<EnvelopeType>(GetEnvelopeTypes());
+
+            _dateFormat = GetDateFormats()
+                .Single(x => _options.DateFormat.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
+
+            _expiryType = GetExpiryTypes()
+                .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>
@@ -165,6 +159,7 @@ namespace RSignSDK
 
             request.SetDateFormat(_dateFormat);
             request.SetExpiryType(_expiryType);
+            request.SetCultureInfo(_options.CultureInfo);
 
             var response = _httpClient.Post("Envelope/PrepareEnvelope", JsonConvert.SerializeObject(request));
 
@@ -707,13 +702,18 @@ namespace RSignSDK
 
         private string GetComputerIPAddress()
         {
-            string ipAddress;
+            string ipAddress = string.Empty;
 
-            using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            try
             {
-                socket.Connect("8.8.8.8", 65530);
-                ipAddress = (socket.LocalEndPoint as IPEndPoint).Address.ToString();
+                using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+                {
+                    socket.Connect("8.8.8.8", 65530);
+                    ipAddress = (socket.LocalEndPoint as IPEndPoint).Address.ToString();
+                }
             }
+            catch
+            { }
 
             return ipAddress;
         }
