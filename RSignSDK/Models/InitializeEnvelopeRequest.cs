@@ -19,7 +19,6 @@ namespace RSignSDK.Models
             IsConfirmationEmailReq = false;
             IsDisclaimerInCertificate = false;
             IsRandomPassword = false;
-            CultureInfo = System.Globalization.CultureInfo.CurrentCulture.ToString();
         }
 
         internal void SetIpAddress(string ipAddress)
@@ -35,6 +34,11 @@ namespace RSignSDK.Models
         internal void SetExpiryType(ExpiryType expiryType)
         {
             ExpiryTypeID = expiryType.ID.ToString();
+        }
+
+        internal void SetCultureInfo(string cultureInfo)
+        {
+            CultureInfo = cultureInfo;
         }
 
         public string DateFormatID { get; private set; }
@@ -87,7 +91,7 @@ namespace RSignSDK.Models
 
         public string AccessTypeAuth { get; set; }
 
-        public string CultureInfo { get; set; }
+        public string CultureInfo { get; private set; }
 
         public string CertificateSignature { get; set; }
     }

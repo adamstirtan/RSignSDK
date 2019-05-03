@@ -68,7 +68,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationException.cs" />
-    <Compile Include="Contracts\IRSignApi.cs" />
+    <Compile Include="Contracts\IRSignAPI.cs" />
+    <Compile Include="Contracts\IRSignApiInternal.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Http\RSignHttpClient.cs" />
     <Compile Include="Models\AddUpdateRecipientResponse.cs" />

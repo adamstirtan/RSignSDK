@@ -12,7 +12,7 @@ namespace RSignSDK.Tests
         [TestMethod]
         public void GetTemplatesTest()
         {
-            using (IRSignAPI sut = new RSignAPI(GetCredentials()))
+            using (IRSignAPIInternal sut = new RSignAPI(GetCredentials()))
             {
                 try
                 {

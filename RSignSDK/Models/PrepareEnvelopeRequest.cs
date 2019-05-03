@@ -22,7 +22,6 @@ namespace RSignSDK.Models
             IsRandomPassword = false;
             IsPasswordMailToSigner = false;
             AccessAuthType = "3702fe94-d7db-45f4-86d7-8cc4791f7677";
-            CultureInfo = System.Globalization.CultureInfo.CurrentCulture.ToString();
             SendReminderIn = 0;
             ThenSendReminderIn = 0;
             SignatureCertificateRequired = true;
@@ -38,6 +37,11 @@ namespace RSignSDK.Models
         internal void SetExpiryType(ExpiryType expiryType)
         {
             ExpiryTypeID = expiryType.ID.ToString();
+        }
+
+        internal void SetCultureInfo(string cultureInfo)
+        {
+            CultureInfo = cultureInfo;
         }
 
         public string DateFormatID { get; private set; }
@@ -82,7 +86,7 @@ namespace RSignSDK.Models
 
         public string AccessAuthType { get; set; }
 
-        public string CultureInfo { get; set; }
+        public string CultureInfo { get; private set; }
 
         public int SendReminderIn { get; set; }
 
@@ -92,6 +96,7 @@ namespace RSignSDK.Models
 
         public bool DownloadLinkRequired { get; set; }
 
-        public string EnvelopeStage { get; set; }//RSIGN DOCS STATE - This will be always set as “InitializeEnvelope”?
+        //RSIGN DOCS STATE - This will be always set as “InitializeEnvelope”?
+        public string EnvelopeStage { get; set; }
     }
 }
