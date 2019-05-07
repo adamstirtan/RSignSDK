@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -208,9 +208,9 @@ namespace RSignSDK
             var response = _httpClient.Get(string.Format("Template/GetConsumableListForEnvelope/{0}", envelopeType.EnvelopeTypeId));
 
             return JsonConvert
-                    .DeserializeObject<TemplateList>(response.Content.ReadAsStringAsync().Result)
-                    .Templates
-                    .ToList();
+                .DeserializeObject<TemplateList>(response.Content.ReadAsStringAsync().Result)
+                .Templates
+                .ToList();
         }
 
         /// <summary>
@@ -224,21 +224,14 @@ namespace RSignSDK
                 Authenticate();
             }
 
-            var envelopeType = _envelopeTypes.Single(x => x.Description.Equals("TemplateRule", StringComparison.InvariantCultureIgnoreCase));
+            var envelopeType = _envelopeTypes.Single(x => x.Description == "TemplateRule");
 
             var response = _httpClient.Get(string.Format("Template/GetConsumableListForEnvelope/{0}", envelopeType.EnvelopeTypeId));
 
-            var result = new List<Rule>();
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                result = JsonConvert
-                    .DeserializeObject<RuleList>(response.Content.ReadAsStringAsync().Result)
-                    .Rules
-                    .ToList();
-            }
-
-            return result;
+            return JsonConvert
+                .DeserializeObject<RuleList>(response.Content.ReadAsStringAsync().Result)
+                .Rules
+                .ToList();
         }
 
         #region Master Data methods
