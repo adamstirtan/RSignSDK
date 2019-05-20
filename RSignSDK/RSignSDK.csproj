@@ -120,6 +120,8 @@
     <Compile Include="Models\SendEnvelopeResponse.cs" />
     <Compile Include="Models\Template.cs" />
     <Compile Include="Models\TemplateList.cs" />
+    <Compile Include="Models\UploadLocalDocumentRequest.cs" />
+    <Compile Include="Models\UploadLocalDocumentResponse.cs" />
     <Compile Include="Models\UseTemplateRequest.cs" />
     <Compile Include="Models\UseTemplateResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
