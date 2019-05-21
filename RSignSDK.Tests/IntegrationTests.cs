@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-
+using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RSignSDK.Contracts;
@@ -83,6 +85,21 @@ namespace RSignSDK.Tests
                     Assert.IsNotNull(addUpdateRecipientResponse.RecipientID);
                     Assert.IsNotNull(addUpdateRecipientResponse.RecipientName);
                 }
+
+                var uploadLocalDocument = sut.UploadLocalDocument(new UploadLocalDocumentRequest
+                {
+                   FileName = "RSign Test.pdf",
+                   EnvelopeId = useTemplateResponse.EnvelopeID,
+                   DocumentBase64Data = "",
+                   EnvelopeStage = "InitalizeUseTemplate"
+                });
+
+                Assert.IsNotNull(uploadLocalDocument);
+                Assert.AreEqual(uploadLocalDocument.StatusCode, 200);
+                Assert.IsNotNull(uploadLocalDocument.StatusMessage);
+                Assert.IsNotNull(uploadLocalDocument.EnvelopeId);
+                Assert.IsNotNull(uploadLocalDocument.DocumentId);
+                Assert.IsNotNull(uploadLocalDocument.FileName);
 
                 var prepareEnvelopeResponse = sut.PrepareEnvelope(new PrepareEnvelopeRequest
                 {
