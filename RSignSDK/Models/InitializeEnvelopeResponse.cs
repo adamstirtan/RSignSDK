@@ -8,6 +8,6 @@
 
         public string Message { get; set; }
 
-        public string EnvelopeId { get; set; }
+        public string EnvelopeID { get; set; }
     }
 }
