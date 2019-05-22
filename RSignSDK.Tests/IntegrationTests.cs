@@ -116,7 +116,7 @@ namespace RSignSDK.Tests
 
                 var sendEnvelopeResponse = sut.SendEnvelope(new SendEnvelopeRequest
                 {
-                    EnvelopeID = useTemplateResponse.EnvelopeID + initializeEnvelopeResponse.EnvelopeID,
+                    EnvelopeID = useTemplateResponse.EnvelopeID,
                     UserID = useTemplateResponse.EnvelopeDetails.RecipientList.Single(x => x.RecipientType == "Sender").ID,
                     EnvelopeTypeID = useTemplateResponse.EnvelopeTypeID
                 });
