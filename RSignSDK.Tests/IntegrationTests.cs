@@ -41,11 +41,10 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(initializeEnvelopeResponse.Message);
                 Assert.IsNotNull(initializeEnvelopeResponse.StatusMessage);
 
-                var uploadLocalDocument = sut.UploadLocalDocument(new UploadLocalDocumentRequest
+                var uploadLocalDocument = sut.UploadLocalDocument(new UploadLocalDocumentRequest(new byte[] { 00, 04, 60, 80 })
                 {
                     FileName = "RSign Test.pdf",
                     EnvelopeID = initializeEnvelopeResponse.EnvelopeID,
-                    DocumentBase64Data = "",
                     EnvelopeStage = "InitalizeEnvelope"
                 });
 
