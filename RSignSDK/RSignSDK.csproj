@@ -116,8 +116,12 @@
     <Compile Include="Models\MasterData\UserConstant.cs" />
     <Compile Include="Models\MasterData\UserType.cs" />
     <Compile Include="Models\Rule.cs" />
+    <Compile Include="Models\SelectControlOptionDetails.cs" />
+    <Compile Include="Models\SelectOption.cs" />
     <Compile Include="Models\SendEnvelopeRequest.cs" />
     <Compile Include="Models\SendEnvelopeResponse.cs" />
+    <Compile Include="Models\SignatureControlRequest.cs" />
+    <Compile Include="Models\SignatureControlResponse.cs" />
     <Compile Include="Models\Template.cs" />
     <Compile Include="Models\TemplateList.cs" />
     <Compile Include="Models\UploadLocalDocumentRequest.cs" />
