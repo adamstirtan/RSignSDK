@@ -33,6 +33,7 @@ namespace RSignSDK.Tests
         {
             using (IRSignAPIInternal sut = new RSignAPI(GetCredentials()))
             {
+
                 var initializeEnvelopeResponse = sut.InitializeEnvelope(new InitializeEnvelopeRequest());
 
                 Assert.IsNotNull(initializeEnvelopeResponse);
@@ -40,19 +41,6 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(initializeEnvelopeResponse.EnvelopeID);
                 Assert.IsNotNull(initializeEnvelopeResponse.Message);
                 Assert.IsNotNull(initializeEnvelopeResponse.StatusMessage);
-
-                var uploadLocalDocument = sut.UploadLocalDocument(new UploadLocalDocumentRequest(new byte[] { 00, 04, 60, 80 })
-                {
-                    FileName = "RSign Test.pdf",
-                    EnvelopeID = initializeEnvelopeResponse.EnvelopeID,
-                    EnvelopeStage = "InitalizeEnvelope"
-                });
-
-                Assert.IsNotNull(uploadLocalDocument);
-                Assert.IsNotNull(uploadLocalDocument.StatusMessage);
-                Assert.IsNotNull(uploadLocalDocument.EnvelopeId);
-                Assert.IsNotNull(uploadLocalDocument.DocumentId);
-                Assert.IsNotNull(uploadLocalDocument.FileName);
 
                 var templates = sut.GetTemplates();
 
@@ -66,12 +54,10 @@ namespace RSignSDK.Tests
                     DocID = initializeEnvelopeResponse.EnvelopeID
                 });
 
-                useTemplateResponse.EnvelopeID = initializeEnvelopeResponse.EnvelopeID;
-
                 Assert.IsNotNull(useTemplateResponse);
                 Assert.AreEqual(useTemplateResponse.StatusCode, 200);
                 Assert.IsNotNull(useTemplateResponse.StatusMessage);
-                Assert.AreEqual(useTemplateResponse.EnvelopeID, initializeEnvelopeResponse.EnvelopeID);
+                Assert.IsNotNull(useTemplateResponse.EnvelopeID);
                 Assert.IsNotNull(useTemplateResponse.TemplateCode);
                 Assert.IsNotNull(useTemplateResponse.EnvelopeTypeID);
 
@@ -81,12 +67,28 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(useTemplateResponse.EnvelopeDetails.DocumentDetails);
                 Assert.AreEqual(1, useTemplateResponse.EnvelopeDetails.DocumentDetails.Count);
 
-                foreach (var recipient in useTemplateResponse.EnvelopeDetails.RecipientList.Where(x => x.RecipientType == "Signer"))
+                var bytesDoc = System.IO.File.ReadAllBytes(@"C:\Users\Lorcan\Desktop\RSignTest.pdf");
+                var uploadLocalDocument = sut.UploadLocalDocument(new UploadLocalDocumentRequest(bytesDoc)
+                {
+                    FileName = "RSignTest.pdf",
+                    EnvelopeID = useTemplateResponse.EnvelopeID,
+                    EnvelopeStage = "InitializeUseTemplate"
+                });
+
+                Assert.IsNotNull(uploadLocalDocument);
+                Assert.IsNotNull(uploadLocalDocument.StatusMessage);
+                Assert.IsNotNull(uploadLocalDocument.EnvelopeId);
+                Assert.IsNotNull(uploadLocalDocument.DocumentId);
+                Assert.IsNotNull(uploadLocalDocument.FileName);
+
+                var myReq = "";
+                var signer = useTemplateResponse.EnvelopeDetails.RecipientList.Where(x => x.RecipientType == "Signer");
+                foreach (var recipient in signer)
                 {
                     var addUpdateRecipientResponse = sut.AddUpdateRecipient(new AddUpdateRecipientRequest
                     {
                         RecipientID = recipient.ID,
-                        EnvelopeID = useTemplateResponse.EnvelopeID,
+                        EnvelopeID = useTemplateResponse.EnvelopeID, 
                         RecipientType = recipient.RecipientTypeID,
                         RecipientName = "Recipient",
                         Email = "test.sender.fern@gmail.com",
@@ -97,15 +99,16 @@ namespace RSignSDK.Tests
                     Assert.AreEqual(addUpdateRecipientResponse.StatusCode, 200);
                     Assert.IsNotNull(addUpdateRecipientResponse.StatusMessage);
                     Assert.IsNotNull(addUpdateRecipientResponse.EnvelopeID);
+                    myReq = addUpdateRecipientResponse.EnvelopeID;
                     Assert.IsNotNull(addUpdateRecipientResponse.RecipientID);
                     Assert.IsNotNull(addUpdateRecipientResponse.RecipientName);
                 }
 
                 var prepareEnvelopeResponse = sut.PrepareEnvelope(new PrepareEnvelopeRequest
                 {
-                    EnvelopeID = useTemplateResponse.EnvelopeID,
-                    Message = "Template Test Message",
-                    Subject = "Template Test Subject"
+                    EnvelopeID = myReq,
+                    Message = "No pdf attached to test for the UploadLocalDocument method",
+                    Subject = "Upload Local Document test"
                 });
 
                 Assert.IsNotNull(prepareEnvelopeResponse);
@@ -115,7 +118,7 @@ namespace RSignSDK.Tests
 
                 var sendEnvelopeResponse = sut.SendEnvelope(new SendEnvelopeRequest
                 {
-                    EnvelopeID = useTemplateResponse.EnvelopeID,
+                    EnvelopeID = prepareEnvelopeResponse.EnvelopeId,
                     UserID = useTemplateResponse.EnvelopeDetails.RecipientList.Single(x => x.RecipientType == "Sender").ID,
                     EnvelopeTypeID = useTemplateResponse.EnvelopeTypeID
                 });

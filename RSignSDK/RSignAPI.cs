@@ -112,6 +112,24 @@ namespace RSignSDK
                 .DeserializeObject<InitializeEnvelopeResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
+        ///<summary>
+        ///Need to upload local document from local machine
+        ///</summary>
+        ///<param name="request">The parameters for the preparation request.</param>
+        /// <returns>The response from the PrepareEnvelope API method, as returned by RSign.</returns>
+        public UploadLocalDocumentResponse UploadLocalDocument(UploadLocalDocumentRequest request)
+        {
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Post("Document/UploadLocalDocument", JsonConvert.SerializeObject(request));
+
+            return JsonConvert
+                .DeserializeObject<UploadLocalDocumentResponse>(response.Content.ReadAsStringAsync().Result);
+        }
+
         /// <summary>
         /// Creates a template bound to an envelope without recipients attached.
         /// </summary>
@@ -148,24 +166,6 @@ namespace RSignSDK
 
             return JsonConvert
                 .DeserializeObject<AddUpdateRecipientResponse>(response.Content.ReadAsStringAsync().Result);
-        }
-
-        ///<summary>
-        ///Need to upload local document from local machine
-        ///</summary>
-        ///<param name="request">The parameters for the preparation request.</param>
-        /// <returns>The response from the PrepareEnvelope API method, as returned by RSign.</returns>
-        public UploadLocalDocumentResponse UploadLocalDocument(UploadLocalDocumentRequest request)
-        {
-            if (!IsAuthenticated)
-            {
-                Authenticate();
-            }
-
-            var response = _httpClient.Post("Document/UploadLocalDocument", JsonConvert.SerializeObject(request));
-
-            return JsonConvert
-                .DeserializeObject<UploadLocalDocumentResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
         /// <summary>
