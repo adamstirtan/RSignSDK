@@ -1,15 +1,22 @@
-﻿namespace RSignSDK.Models.MasterData
+﻿using System.Collections.Generic;
+
+namespace RSignSDK.Models.MasterData
 {
     public class EnvelopeStatus
     {
         /// <summary>
-        /// Uniquely identifies the drop down option.
+        /// Gives a brief discription of the status of the envelope.
         /// </summary>
-        public string ID { get; set; }
+        public string Message { get; set; }
 
         /// <summary>
-        /// Name or description of the drop down option.
+        /// Unique identifier for the envelope.
         /// </summary>
-        public string Value { get; set; }
+        public string EnvelopeID { get; set; }
+
+        /// <summary>
+        /// In depth description of content within the envelope.
+        /// </summary>
+        public List<EnvelopeDetails> EnvelopeDetails { get; set; }
     }
 }

@@ -319,19 +319,17 @@ namespace RSignSDK
         /// </summary>
         /// <returns>The response from the GetEnvelopeStatuses API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
-        public IEnumerable<EnvelopeStatus> GetEnvelopeStatuses()
+        public EnvelopeStatus GetEnvelopeStatuses(string envelopeDisplayCode)
         {
             if (!IsAuthenticated)
             {
                 Authenticate();
             }
 
-            var response = _httpClient.Get("Dashboard/GetMasterData/ENVELOPESTATUS");
+            var response = _httpClient.Get($"/Envelope/GetEnvelopeStatus/{envelopeDisplayCode}");
 
             return JsonConvert
-                .DeserializeObject<MasterDataList<EnvelopeStatus>>(response.Content.ReadAsStringAsync().Result)
-                .MasterList
-                .AsEnumerable();
+                .DeserializeObject<EnvelopeStatus>(response.Content.ReadAsStringAsync().Result);
         }
 
         /// <summary>
