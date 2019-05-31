@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbacusAPI.cs" />
     <Compile Include="AuthenticationException.cs" />
     <Compile Include="Contracts\IRSignAPI.cs" />
     <Compile Include="Contracts\IRSignApiInternal.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Models\DependentField.cs" />
     <Compile Include="Models\DocumentContentDetails.cs" />
     <Compile Include="Models\DocumentDetails.cs" />
+    <Compile Include="Models\DownloadSignedContract.cs" />
     <Compile Include="Models\EnvelopeDetails.cs" />
     <Compile Include="Models\InitializeEnvelopeResponse.cs" />
     <Compile Include="Models\InitializeEnvelopeRequest.cs" />
