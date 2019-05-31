@@ -7,5 +7,11 @@ namespace RSignSDK.Models
 {
     public class DownloadSignedContract
     {
+        public string StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
+        public string Message { get; set; }
+        public Byte Base64FileData { get; set; }
     }
 }
