@@ -211,6 +211,24 @@ namespace RSignSDK
         }
 
         /// <summary>
+        /// Returns the signed contract
+        /// </summary>
+        /// <returns>The response from the GetDownloadedTerminatedAndIncompleteExipredDocument API method, as returned by RSign.</returns>
+        /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
+        public DownloadSignedContractResponse DownloadSignedContract(DownloadSignedContractRequest envelopeId)
+        {
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Get($"Manage/GetDownloadedTerminatedAndIncompleteExipredDocument/{envelopeId}");
+
+            return JsonConvert
+                .DeserializeObject<DownloadSignedContractResponse>(response.Content.ReadAsStringAsync().Result);
+        }
+
+        /// <summary>
         /// Returns the available templates.
         /// </summary>
         /// <returns>The response from the GetTemplates API method, as returned by RSign.</returns>
@@ -738,6 +756,11 @@ namespace RSignSDK
             {
                 _httpClient.Dispose();
             }
+        }
+
+        public IEnumerable<EnvelopeStatus> GetEnvelopeStatuses()
+        {
+            throw new NotImplementedException();
         }
     }
 }

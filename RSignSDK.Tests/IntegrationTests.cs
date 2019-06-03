@@ -88,7 +88,7 @@ namespace RSignSDK.Tests
                     var addUpdateRecipientResponse = sut.AddUpdateRecipient(new AddUpdateRecipientRequest
                     {
                         RecipientID = recipient.ID,
-                        EnvelopeID = useTemplateResponse.EnvelopeID, 
+                        EnvelopeID = useTemplateResponse.EnvelopeID,
                         RecipientType = recipient.RecipientTypeID,
                         RecipientName = "Recipient",
                         Email = "test.sender.fern@gmail.com",
@@ -129,6 +129,13 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(sendEnvelopeResponse.StatusMessage);
                 Assert.IsNotNull(sendEnvelopeResponse.Message);
                 Assert.IsNotNull(sendEnvelopeResponse.EnvelopeId);
+
+                var downloadSignedContract = sut.DownloadSignedContract(new DownloadSignedContractRequest
+                {
+                    EnvelopeID = sendEnvelopeResponse.EnvelopeId
+                });
+
+                Assert.IsNotNull(downloadSignedContract.StatusMessage);
             }
         }
     }
