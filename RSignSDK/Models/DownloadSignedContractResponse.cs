@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RSignSDK.Models
 {
-    public class DownloadSignedContract
+    public class DownloadSignedContractResponse
     {
         public string StatusCode { get; set; }
         public string StatusMessage { get; set; }

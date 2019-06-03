@@ -83,7 +83,8 @@
     <Compile Include="Models\DependentField.cs" />
     <Compile Include="Models\DocumentContentDetails.cs" />
     <Compile Include="Models\DocumentDetails.cs" />
-    <Compile Include="Models\DownloadSignedContract.cs" />
+    <Compile Include="Models\DownloadSignedContractRequest.cs" />
+    <Compile Include="Models\DownloadSignedContractResponse.cs" />
     <Compile Include="Models\EnvelopeDetails.cs" />
     <Compile Include="Models\InitializeEnvelopeResponse.cs" />
     <Compile Include="Models\InitializeEnvelopeRequest.cs" />
