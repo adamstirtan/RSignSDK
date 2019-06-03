@@ -86,6 +86,8 @@
     <Compile Include="Models\DownloadSignedContractRequest.cs" />
     <Compile Include="Models\DownloadSignedContractResponse.cs" />
     <Compile Include="Models\EnvelopeDetails.cs" />
+    <Compile Include="Models\EnvelopeStatusRequest.cs" />
+    <Compile Include="Models\EnvelopeStatusResponse.cs" />
     <Compile Include="Models\InitializeEnvelopeResponse.cs" />
     <Compile Include="Models\InitializeEnvelopeRequest.cs" />
     <Compile Include="Models\InitializeTemplateRequest.cs" />

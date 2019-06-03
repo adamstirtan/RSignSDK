@@ -130,6 +130,15 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(sendEnvelopeResponse.Message);
                 Assert.IsNotNull(sendEnvelopeResponse.EnvelopeId);
 
+                var getEnvelopeStatus = sut.GetEnvelopeStatus(new EnvelopeStatusRequest
+                {
+                    EnvelopeDisplayCode = useTemplateResponse.EnvelopeDetails.EDisplayCode
+                });
+
+                Assert.IsNotNull(getEnvelopeStatus.EnvelopeID);
+                Assert.IsNotNull(getEnvelopeStatus.Message);
+                Assert.IsNotNull(getEnvelopeStatus.EnvelopeDetails);
+
                 var downloadSignedContract = sut.DownloadSignedContract(new DownloadSignedContractRequest
                 {
                     EnvelopeID = sendEnvelopeResponse.EnvelopeId

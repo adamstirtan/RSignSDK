@@ -229,6 +229,24 @@ namespace RSignSDK
         }
 
         /// <summary>
+        /// Returns the available envelope statuses.
+        /// </summary>
+        /// <returns>The response from the GetEnvelopeStatuses API method, as returned by RSign.</returns>
+        /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
+        public EnvelopeStatusResponse GetEnvelopeStatus(EnvelopeStatusRequest envelopeDisplayCode)
+        {
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Get($"/Envelope/GetEnvelopeStatus/{envelopeDisplayCode}");
+
+            return JsonConvert
+                .DeserializeObject<EnvelopeStatusResponse>(response.Content.ReadAsStringAsync().Result);
+        }
+
+        /// <summary>
         /// Returns the available templates.
         /// </summary>
         /// <returns>The response from the GetTemplates API method, as returned by RSign.</returns>
@@ -330,24 +348,6 @@ namespace RSignSDK
                 .DeserializeObject<MasterDataList<DropDownOption>>(response.Content.ReadAsStringAsync().Result)
                 .MasterList
                 .AsEnumerable();
-        }
-
-        /// <summary>
-        /// Returns the available envelope statuses.
-        /// </summary>
-        /// <returns>The response from the GetEnvelopeStatuses API method, as returned by RSign.</returns>
-        /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
-        public EnvelopeStatus GetEnvelopeStatuses(string envelopeDisplayCode)
-        {
-            if (!IsAuthenticated)
-            {
-                Authenticate();
-            }
-
-            var response = _httpClient.Get($"/Envelope/GetEnvelopeStatus/{envelopeDisplayCode}");
-
-            return JsonConvert
-                .DeserializeObject<EnvelopeStatus>(response.Content.ReadAsStringAsync().Result);
         }
 
         /// <summary>

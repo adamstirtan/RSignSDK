@@ -25,6 +25,8 @@ namespace RSignSDK.Contracts
 
         DownloadSignedContractResponse DownloadSignedContract(DownloadSignedContractRequest request);
 
+        EnvelopeStatusResponse GetEnvelopeStatus(EnvelopeStatusRequest request);
+
         IEnumerable<Template> GetTemplates();
 
         IEnumerable<Rule> GetRules();
