@@ -130,21 +130,26 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(sendEnvelopeResponse.Message);
                 Assert.IsNotNull(sendEnvelopeResponse.EnvelopeId);
 
-                var getEnvelopeStatus = sut.GetEnvelopeStatus(new EnvelopeStatusRequest
-                {
-                    EnvelopeDisplayCode = useTemplateResponse.EnvelopeDetails.EDisplayCode
-                });
+                var request = useTemplateResponse.EnvelopeDetails.EDisplayCode;
 
-                Assert.IsNotNull(getEnvelopeStatus.EnvelopeID);
-                Assert.IsNotNull(getEnvelopeStatus.Message);
-                Assert.IsNotNull(getEnvelopeStatus.EnvelopeDetails);
+                var getEnvelopeStatusResponse = sut.GetEnvelopeStatus(request);
 
-                var downloadSignedContract = sut.DownloadSignedContract(new DownloadSignedContractRequest
-                {
-                    EnvelopeID = sendEnvelopeResponse.EnvelopeId
-                });
+                Assert.IsNotNull(getEnvelopeStatusResponse.StatusMessage);
+                Assert.IsNotNull(getEnvelopeStatusResponse.EnvelopeID);
+                Assert.IsNotNull(getEnvelopeStatusResponse.Message);
+                Assert.IsNotNull(getEnvelopeStatusResponse.EnvelopeDetails);
+
+                var aaaa = "15240bd6-ec5a-4262-be7b-3efaf9ce547b";
+
+                var downloadSignedContract = sut.DownloadSignedContract(aaaa);
 
                 Assert.IsNotNull(downloadSignedContract.StatusMessage);
+                Assert.IsNotNull(downloadSignedContract.FileName);
+                Assert.IsNotNull(downloadSignedContract.FilePath);
+                Assert.IsNotNull(downloadSignedContract.Message);
+                Assert.IsNotNull(downloadSignedContract.Base64FileData);
+
+
             }
         }
     }

@@ -13,5 +13,6 @@ namespace RSignSDK.Models
         public string FilePath { get; set; }
         public string Message { get; set; }
         public Byte Base64FileData { get; set; }
+        public byte[] byteArray { get; set; }
     }
 }
