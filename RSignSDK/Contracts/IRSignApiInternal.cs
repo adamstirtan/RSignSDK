@@ -23,9 +23,11 @@ namespace RSignSDK.Contracts
 
         SendEnvelopeResponse SendEnvelope(SendEnvelopeRequest request);
 
-        DownloadSignedContractResponse DownloadSignedContract(string request);
+        DeleteSignedContractResponse DownloadSignedContract(string envelopeId);
 
-        EnvelopeStatusResponse GetEnvelopeStatus(string request);
+        EnvelopeStatusResponse GetEnvelopeStatus(string envelopeId);
+
+        DeleteFinalContractResponse DeleteFinalContract(string envelopeId);
 
         IEnumerable<Template> GetTemplates();
 
