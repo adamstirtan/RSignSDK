@@ -148,20 +148,20 @@ namespace RSignSDK
             return envelopeId;
         }
 
-        public EnvelopeStatus GetEnvelopeStatus(string envelopeId)
+        public EnvelopeStatusResponse GetEnvelopeStatus(string envelopeDisplayCode)
         {
             var rsignCredentials = new RSignAPICredentials(
                "aaron.cullen@fernsoftware.com",
                "Whatever1!",
                "OQAxADgAQwBFADYAOQBEA");
 
-            EnvelopeStatus status = null;
+            EnvelopeStatusResponse status = null;
 
             using (var sut = new RSignAPI(rsignCredentials))
             {
                 try
                 {
-                    status = sut.GetEnvelopeStatuses(envelopeId);
+                    status = sut.GetEnvelopeStatus(envelopeDisplayCode);
                 }
                 catch (AuthenticationException aEx)
                 {
@@ -175,20 +175,55 @@ namespace RSignSDK
             return status;
         }
 
-        public EnvelopeStatus DownloadSignedContract(string envelopeId)
+        public DownloadSignedContractResponse DownloadSignedContract(string envelopeID)
         {
             var rsignCredentials = new RSignAPICredentials(
                "aaron.cullen@fernsoftware.com",
                "Whatever1!",
                "OQAxADgAQwBFADYAOQBEA");
 
-            EnvelopeStatus status = null;
+            DownloadSignedContractResponse status = null;
 
             using (var sut = new RSignAPI(rsignCredentials))
             {
                 try
                 {
-                    status = sut.GetEnvelopeStatuses(envelopeId);
+                    var request = new DownloadSignedContractRequest()
+                    {
+                        EnvelopeID = envelopeID
+                    };
+
+                }
+                catch (AuthenticationException aEx)
+                {
+                    throw aEx;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+            return status;
+        }
+
+        public DeleteFinalContractResponse DeleteFinalContract(string envelopeID)
+        {
+            var rsignCredentials = new RSignAPICredentials(
+               "aaron.cullen@fernsoftware.com",
+               "Whatever1!",
+               "OQAxADgAQwBFADYAOQBEA");
+
+            DeleteFinalContractResponse status = null;
+
+            using (var sut = new RSignAPI(rsignCredentials))
+            {
+                try
+                {
+                    var request = new DownloadSignedContractRequest()
+                    {
+                        EnvelopeID = envelopeID
+                    };
+
                 }
                 catch (AuthenticationException aEx)
                 {

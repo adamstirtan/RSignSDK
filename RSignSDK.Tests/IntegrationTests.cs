@@ -149,6 +149,15 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(downloadSignedContract.Message);
                 Assert.IsNotNull(downloadSignedContract.Base64FileData);
 
+                var delete = "cad9c0cc-d045-45f3-9063-f59af387fd1d";
+
+                var deleteFinalContract = sut.DeleteFinalContract(delete);
+
+                Assert.IsNotNull(deleteFinalContract.StatusCode);
+                Assert.IsNotNull(deleteFinalContract.StatusMessage);
+                Assert.IsNotNull(deleteFinalContract.Message);
+
+
 
             }
         }

@@ -215,7 +215,7 @@ namespace RSignSDK
         /// </summary>
         /// <returns>The response from the GetDownloadedTerminatedAndIncompleteExipredDocument API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
-        public DownloadSignedContractResponse DownloadSignedContract(DownloadSignedContractRequest envelopeId)
+        public DownloadSignedContractResponse DownloadSignedContract(string envelopeId)
         {
             if (!IsAuthenticated)
             {
@@ -233,17 +233,35 @@ namespace RSignSDK
         /// </summary>
         /// <returns>The response from the GetEnvelopeStatuses API method, as returned by RSign.</returns>
         /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
-        public EnvelopeStatusResponse GetEnvelopeStatus(EnvelopeStatusRequest envelopeDisplayCode)
+        public EnvelopeStatusResponse GetEnvelopeStatus(string envelopeDisplayCode)
         {
             if (!IsAuthenticated)
             {
                 Authenticate();
             }
 
-            var response = _httpClient.Get($"/Envelope/GetEnvelopeStatus/{envelopeDisplayCode}");
+            var response = _httpClient.Get($"/api/V1/Envelope/GetEnvelopeStatus/{envelopeDisplayCode}");
 
             return JsonConvert
                 .DeserializeObject<EnvelopeStatusResponse>(response.Content.ReadAsStringAsync().Result);
+        }
+
+        ///<summary>
+        ///Deletes a signed off contract
+        ///</summary>
+        ///<returns>A response from the DeleteFinalContract API method to delete a signed off document from the API</returns>
+        /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
+        public DeleteFinalContractResponse DeleteFinalContract(string envelopeId)
+        {
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Get($"Manage/DeleteFinalContract/{envelopeId}");
+
+            return JsonConvert
+                .DeserializeObject<DeleteFinalContractResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
         /// <summary>
