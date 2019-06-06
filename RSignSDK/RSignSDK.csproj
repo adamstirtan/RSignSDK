@@ -67,7 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbacusAPI.cs" />
+    <Compile Include="AbacusIntegration.cs" />
     <Compile Include="AuthenticationException.cs" />
     <Compile Include="Contracts\IRSignAPI.cs" />
     <Compile Include="Contracts\IRSignApiInternal.cs" />

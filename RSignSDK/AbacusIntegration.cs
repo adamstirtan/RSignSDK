@@ -8,13 +8,13 @@ using System.Linq;
 
 namespace RSignSDK
 {
-    public class AbacusAPI
+    public class AbacusIntegration
     {
-        public AbacusAPI()
+        public AbacusIntegration()
         {
         }
 
-        public string DocumentSend(byte[] documentByte, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
+        public string SendDocumentByte(byte[] documentByte, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
         {
             var rsignCredentials = new RSignAPICredentials(
                 "aaron.cullen@fernsoftware.com",
@@ -81,7 +81,7 @@ namespace RSignSDK
             return envelopeId;
         }
 
-        public string FileNameSend(string filePath, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
+        public string SendDocumentName(string filePath, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
         {
             var rsignCredentials = new RSignAPICredentials(
                 "aaron.cullen@fernsoftware.com",
