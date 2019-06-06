@@ -3,6 +3,7 @@ using RSignSDK.Models;
 using RSignSDK.Models.Authentication;
 using RSignSDK.Models.MasterData;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace RSignSDK
@@ -192,6 +193,14 @@ namespace RSignSDK
                     {
                         EnvelopeID = envelopeID
                     };
+
+                    byte[] bytes = Convert.FromBase64String(status.Base64FileData);
+
+                    FileStream stream = new FileStream(@"C:\Users\Lorcan\Documents\Rmail\Contracts.pdf", FileMode.CreateNew);
+
+                    BinaryWriter writer = new BinaryWriter(stream);
+                    writer.Write(bytes, 0, bytes.Length);
+                    writer.Close();
 
                 }
                 catch (AuthenticationException aEx)

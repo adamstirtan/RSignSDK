@@ -143,6 +143,14 @@ namespace RSignSDK.Tests
 
                 var downloadSignedContract = sut.DownloadSignedContract(aaaa);
 
+                byte[] bytes = Convert.FromBase64String(downloadSignedContract.Base64FileData);
+
+                FileStream stream = new FileStream(@"C:\Users\Lorcan\Documents\Rmail\Contracts.pdf", FileMode.CreateNew);
+
+                BinaryWriter writer = new BinaryWriter(stream);
+                writer.Write(bytes, 0, bytes.Length);
+                writer.Close();
+
                 Assert.IsNotNull(downloadSignedContract.StatusMessage);
                 Assert.IsNotNull(downloadSignedContract.FileName);
                 Assert.IsNotNull(downloadSignedContract.FilePath);
