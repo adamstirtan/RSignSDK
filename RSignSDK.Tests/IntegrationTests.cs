@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-
+using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RSignSDK.Contracts;
@@ -31,24 +33,25 @@ namespace RSignSDK.Tests
         {
             using (IRSignAPIInternal sut = new RSignAPI(GetCredentials()))
             {
+
                 var initializeEnvelopeResponse = sut.InitializeEnvelope(new InitializeEnvelopeRequest());
 
                 Assert.IsNotNull(initializeEnvelopeResponse);
                 Assert.AreEqual(initializeEnvelopeResponse.StatusCode, 200);
-                Assert.IsNotNull(initializeEnvelopeResponse.EnvelopeId);
+                Assert.IsNotNull(initializeEnvelopeResponse.EnvelopeID);
                 Assert.IsNotNull(initializeEnvelopeResponse.Message);
                 Assert.IsNotNull(initializeEnvelopeResponse.StatusMessage);
 
                 var templates = sut.GetTemplates();
 
-                var template = templates.SingleOrDefault(x => x.Name == "Integration_Test");
+                var template = templates.SingleOrDefault(x => x.Name == "Template_Test");
 
                 Assert.IsNotNull(template);
 
                 var useTemplateResponse = sut.UseTemplate(new UseTemplateRequest
                 {
                     TemplateID = template.ID,
-                    DocID = initializeEnvelopeResponse.EnvelopeId
+                    DocID = initializeEnvelopeResponse.EnvelopeID
                 });
 
                 Assert.IsNotNull(useTemplateResponse);
@@ -64,7 +67,23 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(useTemplateResponse.EnvelopeDetails.DocumentDetails);
                 Assert.AreEqual(1, useTemplateResponse.EnvelopeDetails.DocumentDetails.Count);
 
-                foreach (var recipient in useTemplateResponse.EnvelopeDetails.RecipientList.Where(x => x.RecipientType == "Signer"))
+                var bytesDoc = System.IO.File.ReadAllBytes(@"C:\Users\Lorcan\Desktop\RSignTest.pdf");
+                var uploadLocalDocument = sut.UploadLocalDocument(new UploadLocalDocumentRequest(bytesDoc)
+                {
+                    FileName = "RSignTest.pdf",
+                    EnvelopeID = useTemplateResponse.EnvelopeID,
+                    EnvelopeStage = "InitializeUseTemplate"
+                });
+
+                Assert.IsNotNull(uploadLocalDocument);
+                Assert.IsNotNull(uploadLocalDocument.StatusMessage);
+                Assert.IsNotNull(uploadLocalDocument.EnvelopeId);
+                Assert.IsNotNull(uploadLocalDocument.DocumentId);
+                Assert.IsNotNull(uploadLocalDocument.FileName);
+
+                var myReq = "";
+                var signer = useTemplateResponse.EnvelopeDetails.RecipientList.Where(x => x.RecipientType == "Signer");
+                foreach (var recipient in signer)
                 {
                     var addUpdateRecipientResponse = sut.AddUpdateRecipient(new AddUpdateRecipientRequest
                     {
@@ -72,7 +91,7 @@ namespace RSignSDK.Tests
                         EnvelopeID = useTemplateResponse.EnvelopeID,
                         RecipientType = recipient.RecipientTypeID,
                         RecipientName = "Recipient",
-                        Email = "adam.stirtan@fernsoftware.com",
+                        Email = "test.sender.fern@gmail.com",
                         Order = 1
                     });
 
@@ -80,15 +99,16 @@ namespace RSignSDK.Tests
                     Assert.AreEqual(addUpdateRecipientResponse.StatusCode, 200);
                     Assert.IsNotNull(addUpdateRecipientResponse.StatusMessage);
                     Assert.IsNotNull(addUpdateRecipientResponse.EnvelopeID);
+                    myReq = addUpdateRecipientResponse.EnvelopeID;
                     Assert.IsNotNull(addUpdateRecipientResponse.RecipientID);
                     Assert.IsNotNull(addUpdateRecipientResponse.RecipientName);
                 }
 
                 var prepareEnvelopeResponse = sut.PrepareEnvelope(new PrepareEnvelopeRequest
                 {
-                    EnvelopeID = useTemplateResponse.EnvelopeID,
-                    Message = "Integration Test Message",
-                    Subject = "Integration Test Subject"
+                    EnvelopeID = myReq,
+                    Message = "No pdf attached to test for the UploadLocalDocument method",
+                    Subject = "Upload Local Document test"
                 });
 
                 Assert.IsNotNull(prepareEnvelopeResponse);
@@ -98,7 +118,7 @@ namespace RSignSDK.Tests
 
                 var sendEnvelopeResponse = sut.SendEnvelope(new SendEnvelopeRequest
                 {
-                    EnvelopeID = useTemplateResponse.EnvelopeID,
+                    EnvelopeID = prepareEnvelopeResponse.EnvelopeId,
                     UserID = useTemplateResponse.EnvelopeDetails.RecipientList.Single(x => x.RecipientType == "Sender").ID,
                     EnvelopeTypeID = useTemplateResponse.EnvelopeTypeID
                 });
@@ -109,6 +129,44 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(sendEnvelopeResponse.StatusMessage);
                 Assert.IsNotNull(sendEnvelopeResponse.Message);
                 Assert.IsNotNull(sendEnvelopeResponse.EnvelopeId);
+
+                var request = useTemplateResponse.EnvelopeDetails.EDisplayCode;
+
+                var getEnvelopeStatusResponse = sut.GetEnvelopeStatus(request);
+
+                Assert.IsNotNull(getEnvelopeStatusResponse.StatusMessage);
+                Assert.IsNotNull(getEnvelopeStatusResponse.EnvelopeID);
+                Assert.IsNotNull(getEnvelopeStatusResponse.Message);
+                Assert.IsNotNull(getEnvelopeStatusResponse.EnvelopeDetails);
+
+                var aaaa = "15240bd6-ec5a-4262-be7b-3efaf9ce547b";
+
+                var downloadSignedContract = sut.DownloadSignedContract(aaaa);
+
+                byte[] bytes = Convert.FromBase64String(downloadSignedContract.Base64FileData);
+
+                FileStream stream = new FileStream(@"C:\Users\Lorcan\Documents\Rmail\Contracts.pdf", FileMode.CreateNew);
+
+                BinaryWriter writer = new BinaryWriter(stream);
+                writer.Write(bytes, 0, bytes.Length);
+                writer.Close();
+
+                Assert.IsNotNull(downloadSignedContract.StatusMessage);
+                Assert.IsNotNull(downloadSignedContract.FileName);
+                Assert.IsNotNull(downloadSignedContract.FilePath);
+                Assert.IsNotNull(downloadSignedContract.Message);
+                Assert.IsNotNull(downloadSignedContract.Base64FileData);
+
+                var delete = "cad9c0cc-d045-45f3-9063-f59af387fd1d";
+
+                var deleteFinalContract = sut.DeleteFinalContract(delete);
+
+                Assert.IsNotNull(deleteFinalContract.StatusCode);
+                Assert.IsNotNull(deleteFinalContract.StatusMessage);
+                Assert.IsNotNull(deleteFinalContract.Message);
+
+
+
             }
         }
     }

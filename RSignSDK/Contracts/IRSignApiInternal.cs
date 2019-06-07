@@ -17,9 +17,13 @@ namespace RSignSDK.Contracts
 
         AddUpdateRecipientResponse AddUpdateRecipient(AddUpdateRecipientRequest request);
 
+        UploadLocalDocumentResponse UploadLocalDocument(UploadLocalDocumentRequest request);
+
         PrepareEnvelopeResponse PrepareEnvelope(PrepareEnvelopeRequest request);
 
         SendEnvelopeResponse SendEnvelope(SendEnvelopeRequest request);
+
+        EnvelopeStatusResponse GetEnvelopeStatus(string envelopeId);
 
         IEnumerable<Template> GetTemplates();
 

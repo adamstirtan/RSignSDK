@@ -26,7 +26,7 @@ namespace RSignSDK.Models
             ThenSendReminderIn = 0;
             SignatureCertificateRequired = true;
             DownloadLinkRequired = true;
-            EnvelopeStage = "InitializeEnvelope";
+            EnvelopeStage = "PrepareEnvelope";
         }
 
         internal void SetDateFormat(DateFormat dateFormat)

@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-
 using Newtonsoft.Json;
-
 using RSignSDK.Contracts;
 using RSignSDK.Http;
 using RSignSDK.Models;
 using RSignSDK.Models.Authentication;
 using RSignSDK.Models.MasterData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 
 namespace RSignSDK
 {
@@ -85,9 +83,160 @@ namespace RSignSDK
                 .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        public bool Send(string templateName, IEnumerable<string> recipients)
+        public string Send(byte[] documentByte, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
         {
-            throw new NotImplementedException();
+            var envelopeId = "";
+
+            var initializeEnvelopeResponse = InitializeEnvelope(new InitializeEnvelopeRequest());
+            var templates = GetTemplates();
+            var template = templates.SingleOrDefault(x => x.Name == templateName);
+
+            var useTemplateResponse = UseTemplate(new UseTemplateRequest
+            {
+                TemplateID = template.ID,
+                DocID = initializeEnvelopeResponse.EnvelopeID
+            });
+
+            var uploadLocalDocument = UploadLocalDocument(new UploadLocalDocumentRequest(documentByte)
+            {
+                FileName = documentName,
+                EnvelopeID = useTemplateResponse.EnvelopeID,
+                EnvelopeStage = "InitializeUseTemplate"
+            });
+
+            var myReq = "";
+            var signer = useTemplateResponse.EnvelopeDetails.RecipientList.Where(x => x.RecipientType == "Signer");
+            foreach (var recipient in signer)
+            {
+                var addUpdateRecipientResponse = AddUpdateRecipient(new AddUpdateRecipientRequest
+                {
+                    RecipientID = recipient.ID,
+                    EnvelopeID = useTemplateResponse.EnvelopeID,
+                    RecipientType = recipient.RecipientTypeID,
+                    RecipientName = recipientName,
+                    Email = recipientEmail,
+                    Order = 1
+                });
+
+                myReq = addUpdateRecipientResponse.EnvelopeID;
+            }
+
+            var prepareEnvelopeResponse = PrepareEnvelope(new PrepareEnvelopeRequest
+            {
+                EnvelopeID = myReq,
+                Message = body,
+                Subject = subject
+            });
+
+            var sendEnvelopeResponse = SendEnvelope(new SendEnvelopeRequest
+            {
+                EnvelopeID = prepareEnvelopeResponse.EnvelopeId,
+                UserID = useTemplateResponse.EnvelopeDetails.RecipientList.Single(x => x.RecipientType == "Sender").ID,
+                EnvelopeTypeID = useTemplateResponse.EnvelopeTypeID
+            });
+
+            envelopeId = sendEnvelopeResponse.EnvelopeId;
+
+            return envelopeId;
+        }
+
+        public string Send(string filePath, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
+        {
+            var envelopeId = "";
+
+            var initializeEnvelopeResponse = InitializeEnvelope(new InitializeEnvelopeRequest());
+
+            var templates = GetTemplates();
+
+            var template = templates.SingleOrDefault(x => x.Name == templateName);
+
+            var useTemplateResponse = UseTemplate(new UseTemplateRequest
+            {
+                TemplateID = template.ID,
+                DocID = initializeEnvelopeResponse.EnvelopeID
+            });
+
+            var bytesDoc = System.IO.File.ReadAllBytes(filePath);
+            var uploadLocalDocument = UploadLocalDocument(new UploadLocalDocumentRequest(bytesDoc)
+            {
+                // TODO: check what makes sense here
+                FileName = "RSignTest.pdf",
+                EnvelopeID = useTemplateResponse.EnvelopeID,
+                EnvelopeStage = "InitializeUseTemplate"
+            });
+
+            var myReq = "";
+            var signer = useTemplateResponse.EnvelopeDetails.RecipientList.Where(x => x.RecipientType == "Signer");
+            foreach (var recipient in signer)
+            {
+                var addUpdateRecipientResponse = AddUpdateRecipient(new AddUpdateRecipientRequest
+                {
+                    RecipientID = recipient.ID,
+                    EnvelopeID = useTemplateResponse.EnvelopeID,
+                    RecipientType = recipient.RecipientTypeID,
+                    RecipientName = recipientName,
+                    Email = recipientEmail,
+                    Order = 1
+                });
+
+                myReq = addUpdateRecipientResponse.EnvelopeID;
+            }
+
+            var prepareEnvelopeResponse = PrepareEnvelope(new PrepareEnvelopeRequest
+            {
+                EnvelopeID = myReq,
+                Message = body,
+                Subject = subject
+            });
+
+            var sendEnvelopeResponse = SendEnvelope(new SendEnvelopeRequest
+            {
+                EnvelopeID = prepareEnvelopeResponse.EnvelopeId,
+                UserID = useTemplateResponse.EnvelopeDetails.RecipientList.Single(x => x.RecipientType == "Sender").ID,
+                EnvelopeTypeID = useTemplateResponse.EnvelopeTypeID
+            });
+
+            envelopeId = sendEnvelopeResponse.EnvelopeId;
+
+            return envelopeId;
+        }
+
+        public EnvelopeStatusResponse GetEnvelopeStatus(string envelopeDisplayCode)
+        {
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Get($"Envelope/GetEnvelopeStatus/{envelopeDisplayCode}");
+
+            return JsonConvert
+                .DeserializeObject<EnvelopeStatusResponse>(response.Content.ReadAsStringAsync().Result);
+        }
+
+        public DownloadSignedContractResponse DownloadSignedContract(string envelopeId)
+        {
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Get($"Manage/GetEnvelopeXMLByCode/{envelopeId}");
+
+            return JsonConvert
+                .DeserializeObject<DownloadSignedContractResponse>(response.Content.ReadAsStringAsync().Result);
+        }
+
+        public bool DeleteFinalContract(string envelopeId)
+        {
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Get($"Manage/DeleteFinalContract/{envelopeId}");
+
+            return response.StatusCode == HttpStatusCode.OK;
         }
 
         /// <summary>
@@ -110,6 +259,24 @@ namespace RSignSDK
 
             return JsonConvert
                 .DeserializeObject<InitializeEnvelopeResponse>(response.Content.ReadAsStringAsync().Result);
+        }
+
+        ///<summary>
+        ///Need to upload local document from local machine
+        ///</summary>
+        ///<param name="request">The parameters for the preparation request.</param>
+        /// <returns>The response from the PrepareEnvelope API method, as returned by RSign.</returns>
+        public UploadLocalDocumentResponse UploadLocalDocument(UploadLocalDocumentRequest request)
+        {
+            if (!IsAuthenticated)
+            {
+                Authenticate();
+            }
+
+            var response = _httpClient.Post("Document/UploadLocalDocument", JsonConvert.SerializeObject(request));
+
+            return JsonConvert
+                .DeserializeObject<UploadLocalDocumentResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
         /// <summary>
@@ -208,9 +375,9 @@ namespace RSignSDK
             var response = _httpClient.Get(string.Format("Template/GetConsumableListForEnvelope/{0}", envelopeType.EnvelopeTypeId));
 
             return JsonConvert
-                    .DeserializeObject<TemplateList>(response.Content.ReadAsStringAsync().Result)
-                    .Templates
-                    .ToList();
+                .DeserializeObject<TemplateList>(response.Content.ReadAsStringAsync().Result)
+                .Templates
+                .ToList();
         }
 
         /// <summary>
@@ -224,21 +391,14 @@ namespace RSignSDK
                 Authenticate();
             }
 
-            var envelopeType = _envelopeTypes.Single(x => x.Description.Equals("TemplateRule", StringComparison.InvariantCultureIgnoreCase));
+            var envelopeType = _envelopeTypes.Single(x => x.Description == "TemplateRule");
 
             var response = _httpClient.Get(string.Format("Template/GetConsumableListForEnvelope/{0}", envelopeType.EnvelopeTypeId));
 
-            var result = new List<Rule>();
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                result = JsonConvert
-                    .DeserializeObject<RuleList>(response.Content.ReadAsStringAsync().Result)
-                    .Rules
-                    .ToList();
-            }
-
-            return result;
+            return JsonConvert
+                .DeserializeObject<RuleList>(response.Content.ReadAsStringAsync().Result)
+                .Rules
+                .ToList();
         }
 
         #region Master Data methods
@@ -299,26 +459,6 @@ namespace RSignSDK
 
             return JsonConvert
                 .DeserializeObject<MasterDataList<DropDownOption>>(response.Content.ReadAsStringAsync().Result)
-                .MasterList
-                .AsEnumerable();
-        }
-
-        /// <summary>
-        /// Returns the available envelope statuses.
-        /// </summary>
-        /// <returns>The response from the GetEnvelopeStatuses API method, as returned by RSign.</returns>
-        /// <exception cref="AuthenticationException">This exception is thrown if the supplied credentials are invalid.</exception>
-        public IEnumerable<EnvelopeStatus> GetEnvelopeStatuses()
-        {
-            if (!IsAuthenticated)
-            {
-                Authenticate();
-            }
-
-            var response = _httpClient.Get("Dashboard/GetMasterData/ENVELOPESTATUS");
-
-            return JsonConvert
-                .DeserializeObject<MasterDataList<EnvelopeStatus>>(response.Content.ReadAsStringAsync().Result)
                 .MasterList
                 .AsEnumerable();
         }
@@ -729,6 +869,11 @@ namespace RSignSDK
             {
                 _httpClient.Dispose();
             }
+        }
+
+        public IEnumerable<EnvelopeStatus> GetEnvelopeStatuses()
+        {
+            throw new NotImplementedException();
         }
     }
 }
