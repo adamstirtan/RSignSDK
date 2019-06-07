@@ -7,7 +7,7 @@ namespace RSignSDK.Models.MasterData
         /// <summary>
         /// Gives a StatusCode reutrn for youe API cal.
         /// </summary>
-        public string StatusCode { get; set; }
+        public int StatusCode { get; set; }
 
         /// <summary>
         /// Gives a brief discription of the call made to the API.
@@ -22,7 +22,7 @@ namespace RSignSDK.Models.MasterData
         /// <summary>
         /// Unique identifier for the envelope.
         /// </summary>
-        public string EnvelopeID { get; set; }
+        public string EnvelopeId { get; set; }
 
         /// <summary>
         /// In depth description of content within the envelope.
