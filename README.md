@@ -12,6 +12,7 @@ var credentials = new RSignAPICredentials
     "ReferenceKey": "optional"
 };
 
+// Options are optional and have UK based defaults
 var options = new RSignAPIOptions
 {
     "CultureInfo" = "en-us"
@@ -20,6 +21,7 @@ var options = new RSignAPIOptions
 byte[] fileBytes = ReadFile("contract.pdf");
 string html = ReadEmailTemplate();
 
+// Use RSignAPI(RSignCredentials) ctor for default options
 using (var api = new RSignAPI(credentials, options))
 {
     var envelopeId = api.Send(
