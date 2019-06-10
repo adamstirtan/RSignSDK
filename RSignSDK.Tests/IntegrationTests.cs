@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Net;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RSignSDK.Contracts;
@@ -21,7 +19,7 @@ namespace RSignSDK.Tests
                 var sendFilePath = sut.SendFilePath(@"C:\Users\Lorcan\Documents\Rmail\Contacts.pdf", "Contacts.pdf", "Template_Test", "test.sender.fern@gmail.com", "Lorcan Quinn", "SendFilepath Test 10-06", "This is a test for sending file path");
                 Assert.IsNotNull(sendFilePath);
 
-                var documentByte = System.IO.File.ReadAllBytes(@"C:\Users\Lorcan\Documents\Rmail\Contacts.pdf"); // NOTE: Assuming that we already will have the byte array of the document
+                var documentByte = File.ReadAllBytes(@"C:\Users\Lorcan\Documents\Rmail\Contacts.pdf"); // NOTE: Assuming that we already will have the byte array of the document
                 var sendByteDocument = sut.SendByteDocument(documentByte, "Contacts.pdf", "Template_Test", "test.sender.fern@gmail.com", "Lorcan Quinn", "SendFilepath Test 10-06", "This is a test for sending file path");
                 Assert.IsNotNull(sendByteDocument);
 
@@ -38,7 +36,6 @@ namespace RSignSDK.Tests
         {
             using (IRSignAPIInternal sut = new RSignAPI(GetCredentials()))
             {
-
                 var initializeEnvelopeResponse = sut.InitializeEnvelope(new InitializeEnvelopeRequest());
 
                 Assert.IsNotNull(initializeEnvelopeResponse);
@@ -72,7 +69,7 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(useTemplateResponse.EnvelopeDetails.DocumentDetails);
                 Assert.AreEqual(1, useTemplateResponse.EnvelopeDetails.DocumentDetails.Count);
 
-                var bytesDoc = System.IO.File.ReadAllBytes(@"C:\Users\Lorcan\Desktop\RSignTest.pdf");
+                var bytesDoc = File.ReadAllBytes(@"C:\Users\Lorcan\Desktop\RSignTest.pdf");
                 var uploadLocalDocument = sut.UploadLocalDocument(new UploadLocalDocumentRequest(bytesDoc)
                 {
                     FileName = "RSignTest.pdf",
@@ -169,9 +166,6 @@ namespace RSignSDK.Tests
                 //Assert.IsNotNull(deleteFinalContract.StatusCode);
                 //Assert.IsNotNull(deleteFinalContract.StatusMessage);
                 //Assert.IsNotNull(deleteFinalContract.Message);
-
-
-
             }
         }
     }
