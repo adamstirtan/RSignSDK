@@ -213,14 +213,14 @@ namespace RSignSDK
                 .DeserializeObject<EnvelopeStatusResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
-        public DownloadSignedContractResponse DownloadSignedContract(string envelopeId)
+        public DownloadSignedContractResponse DownloadSignedContract(string envelopeDisplayCode)
         {
             if (!IsAuthenticated)
             {
                 Authenticate();
             }
 
-            var response = _httpClient.Get($"Manage/GetDownloadedTerminatedAndIncompleteExipredDocument/{envelopeId}");
+            var response = _httpClient.Get($"Manage/GetDownloadedTerminatedAndIncompleteExipredDocument/{envelopeDisplayCode}");
 
             return JsonConvert
                 .DeserializeObject<DownloadSignedContractResponse>(response.Content.ReadAsStringAsync().Result);

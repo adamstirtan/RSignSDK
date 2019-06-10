@@ -19,17 +19,16 @@ namespace RSignSDK.Tests
             using (IRSignAPI sut = new RSignAPI(GetCredentials()))
             {
                 var sendFilePath = sut.SendFilePath(@"C:\Users\Lorcan\Documents\Rmail\Contacts.pdf", "Contacts.pdf", "Template_Test", "test.sender.fern@gmail.com", "Lorcan Quinn", "SendFilepath Test 10-06", "This is a test for sending file path");
+                Assert.IsNotNull(sendFilePath);
 
-                var documentByte = System.IO.File.ReadAllBytes(@"C:\Users\Lorcan\Documents\Rmail\Contacts.pdf"); // Assuming that we already will have the byte array of the document
+                var documentByte = System.IO.File.ReadAllBytes(@"C:\Users\Lorcan\Documents\Rmail\Contacts.pdf"); // NOTE: Assuming that we already will have the byte array of the document
                 var sendByteDocument = sut.SendByteDocument(documentByte, "Contacts.pdf", "Template_Test", "test.sender.fern@gmail.com", "Lorcan Quinn", "SendFilepath Test 10-06", "This is a test for sending file path");
+                Assert.IsNotNull(sendByteDocument);
 
                 var getEnvelopeStatus = sut.GetEnvelopeStatus("23395529-2607-AADE-9697-DDEB");
+                Assert.IsNotNull(getEnvelopeStatus);
 
                 var downloadSignedContract = sut.DownloadSignedContract("23395529-2607-AADE-9697-DDEB");
-
-                Assert.IsNotNull(sendFilePath);
-                Assert.IsNotNull(sendByteDocument);
-                Assert.IsNotNull(getEnvelopeStatus);
                 Assert.IsNotNull(downloadSignedContract);
             }
         }
