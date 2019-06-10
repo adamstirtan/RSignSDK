@@ -1,14 +1,16 @@
-using Newtonsoft.Json;
-using RSignSDK.Contracts;
-using RSignSDK.Http;
-using RSignSDK.Models;
-using RSignSDK.Models.Authentication;
-using RSignSDK.Models.MasterData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+
+using Newtonsoft.Json;
+
+using RSignSDK.Contracts;
+using RSignSDK.Http;
+using RSignSDK.Models;
+using RSignSDK.Models.Authentication;
+using RSignSDK.Models.MasterData;
 
 namespace RSignSDK
 {
