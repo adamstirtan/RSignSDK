@@ -83,7 +83,7 @@ namespace RSignSDK
                 .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        public string Send(byte[] documentByte, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
+        public string SendByteDocument(byte[] documentByte, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
         {
             var envelopeId = "";
 
@@ -140,7 +140,7 @@ namespace RSignSDK
             return envelopeId;
         }
 
-        public string Send(string filePath, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
+        public string SendFilePath(string filePath, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
         {
             var envelopeId = "";
 
@@ -159,8 +159,7 @@ namespace RSignSDK
             var bytesDoc = System.IO.File.ReadAllBytes(filePath);
             var uploadLocalDocument = UploadLocalDocument(new UploadLocalDocumentRequest(bytesDoc)
             {
-                // TODO: check what makes sense here
-                FileName = "RSignTest.pdf",
+                FileName = documentName,
                 EnvelopeID = useTemplateResponse.EnvelopeID,
                 EnvelopeStage = "InitializeUseTemplate"
             });
