@@ -7,9 +7,9 @@ namespace RSignSDK.Contracts
 {
     public interface IRSignAPI : IDisposable
     {
-        string SendByteDocument(byte[] documentByte, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body);
+        string Send(byte[] documentByte, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body);
 
-        string SendFilePath(string filePath, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body);
+        string Send(string filePath, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body);
 
         EnvelopeStatusResponse GetEnvelopeStatus(string envelopeDisplayCode);
 
