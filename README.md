@@ -18,7 +18,10 @@ var options = new RSignAPIOptions
     "CultureInfo" = "en-us"
 };
 
+// Read a PDF, Word, etc document and convert to byte[]
 byte[] fileBytes = ReadFile("contract.pdf");
+
+// An example method to generate the email message body
 string html = ReadEmailTemplate();
 
 // Use RSignAPI(RSignCredentials) ctor for default options
