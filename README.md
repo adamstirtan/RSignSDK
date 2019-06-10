@@ -1,6 +1,6 @@
 # RSignSDK
 ### Overview
-Unofficial SDK in .NET for [RSign](https://www.rsign.com/) by RPost. This library was created to provide an abstraction layer on top of the API provided by RPost in a convenient manner. It is built on .NET 4.0 because I needed to be able to drop it in to an older .NET application.
+Unofficial SDK in .NET for [RSign](https://www.rsign.com/) by RPost. This library was created to provide an abstraction layer on top of the API provided by RPost in a convenient manner. It is built on .NET 4.0 because I needed to be able to drop it in to any .NET application.
 
 ### Usage
 Create an instance of the credentials class and supply it with your EmailId, Password and optionally a ReferenceKey from RPost. Provide the credentials to the API object and authentication will happen automatically when you make an API call to a resource that requires authentication.
@@ -12,14 +12,29 @@ var credentials = new RSignAPICredentials
     "ReferenceKey": "optional"
 };
 
-IEnumerable<Font> fonts;
-
-using (var api = new RSignAPI(credentials))
+// Options are optional and have UK based defaults
+var options = new RSignAPIOptions
 {
-    fonts = api.GetFonts();
-}
+    "CultureInfo" = "en-us"
+};
 
-foreach (var font in fonts)
+// Read a PDF, Word, etc document and convert to byte[]
+byte[] fileBytes = ReadFile("contract.pdf");
+
+// An example method to generate the email message body
+string html = ReadEmailTemplate();
+
+// Use RSignAPI(RSignCredentials) ctor for default options
+using (var api = new RSignAPI(credentials, options))
 {
-    Console.WriteLine(font.FontFamily);
+    var envelopeId = api.Send(
+        fileBytes,
+        "Contract",
+        "New Customer Document",
+        "new.customer@email.com",
+        "Mr. New Customer",
+        "Welcome!",
+        html);
+    
+    Console.WriteLine($"The signing request has been sent and responded with the identifier {envelopeId}");
 }

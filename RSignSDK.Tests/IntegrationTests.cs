@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Net;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RSignSDK.Contracts;
@@ -18,13 +16,18 @@ namespace RSignSDK.Tests
         {
             using (IRSignAPI sut = new RSignAPI(GetCredentials()))
             {
-                var result = sut.Send("Integration_Test", new List<string>
-                {
-                    "adam.stirtan@fernsoftware.com",
-                    "lorcan.quinn@fernsoftware.com"
-                });
+                var sendFilePath = sut.SendFilePath(@"C:\Users\Lorcan\Documents\Rmail\Contacts.pdf", "Contacts.pdf", "Template_Test", "test.sender.fern@gmail.com", "Lorcan Quinn", "SendFilepath Test 10-06", "This is a test for sending file path");
+                Assert.IsNotNull(sendFilePath);
 
-                Assert.IsTrue(result);
+                var documentByte = File.ReadAllBytes(@"C:\Users\Lorcan\Documents\Rmail\Contacts.pdf"); // NOTE: Assuming that we already will have the byte array of the document
+                var sendByteDocument = sut.SendByteDocument(documentByte, "Contacts.pdf", "Template_Test", "test.sender.fern@gmail.com", "Lorcan Quinn", "SendFilepath Test 10-06", "This is a test for sending file path");
+                Assert.IsNotNull(sendByteDocument);
+
+                var getEnvelopeStatus = sut.GetEnvelopeStatus("23395529-2607-AADE-9697-DDEB");
+                Assert.IsNotNull(getEnvelopeStatus);
+
+                var downloadSignedContract = sut.DownloadSignedContract("23395529-2607-AADE-9697-DDEB");
+                Assert.IsNotNull(downloadSignedContract);
             }
         }
 
@@ -33,7 +36,6 @@ namespace RSignSDK.Tests
         {
             using (IRSignAPIInternal sut = new RSignAPI(GetCredentials()))
             {
-
                 var initializeEnvelopeResponse = sut.InitializeEnvelope(new InitializeEnvelopeRequest());
 
                 Assert.IsNotNull(initializeEnvelopeResponse);
@@ -67,7 +69,7 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(useTemplateResponse.EnvelopeDetails.DocumentDetails);
                 Assert.AreEqual(1, useTemplateResponse.EnvelopeDetails.DocumentDetails.Count);
 
-                var bytesDoc = System.IO.File.ReadAllBytes(@"C:\Users\Lorcan\Desktop\RSignTest.pdf");
+                var bytesDoc = File.ReadAllBytes(@"C:\Users\Lorcan\Desktop\RSignTest.pdf");
                 var uploadLocalDocument = sut.UploadLocalDocument(new UploadLocalDocumentRequest(bytesDoc)
                 {
                     FileName = "RSignTest.pdf",
@@ -130,43 +132,40 @@ namespace RSignSDK.Tests
                 Assert.IsNotNull(sendEnvelopeResponse.Message);
                 Assert.IsNotNull(sendEnvelopeResponse.EnvelopeId);
 
-                var request = useTemplateResponse.EnvelopeDetails.EDisplayCode;
+                //var request = useTemplateResponse.EnvelopeDetails.EDisplayCode;
 
-                var getEnvelopeStatusResponse = sut.GetEnvelopeStatus(request);
+                //var getEnvelopeStatusResponse = sut.GetEnvelopeStatus(request);
 
-                Assert.IsNotNull(getEnvelopeStatusResponse.StatusMessage);
-                Assert.IsNotNull(getEnvelopeStatusResponse.EnvelopeID);
-                Assert.IsNotNull(getEnvelopeStatusResponse.Message);
-                Assert.IsNotNull(getEnvelopeStatusResponse.EnvelopeDetails);
+                //Assert.IsNotNull(getEnvelopeStatusResponse.StatusMessage);
+                //Assert.IsNotNull(getEnvelopeStatusResponse.EnvelopeID);
+                //Assert.IsNotNull(getEnvelopeStatusResponse.Message);
+                //Assert.IsNotNull(getEnvelopeStatusResponse.EnvelopeDetails);
 
-                var aaaa = "15240bd6-ec5a-4262-be7b-3efaf9ce547b";
+                //var aaaa = "15240bd6-ec5a-4262-be7b-3efaf9ce547b";
 
-                var downloadSignedContract = sut.DownloadSignedContract(aaaa);
+                //var downloadSignedContract = sut.DownloadSignedContract(aaaa);
 
-                byte[] bytes = Convert.FromBase64String(downloadSignedContract.Base64FileData);
+                //byte[] bytes = Convert.FromBase64String(downloadSignedContract.Base64FileData);
 
-                FileStream stream = new FileStream(@"C:\Users\Lorcan\Documents\Rmail\Contracts.pdf", FileMode.CreateNew);
+                //FileStream stream = new FileStream(@"C:\Users\Lorcan\Documents\Rmail\Contracts.pdf", FileMode.CreateNew);
 
-                BinaryWriter writer = new BinaryWriter(stream);
-                writer.Write(bytes, 0, bytes.Length);
-                writer.Close();
+                //BinaryWriter writer = new BinaryWriter(stream);
+                //writer.Write(bytes, 0, bytes.Length);
+                //writer.Close();
 
-                Assert.IsNotNull(downloadSignedContract.StatusMessage);
-                Assert.IsNotNull(downloadSignedContract.FileName);
-                Assert.IsNotNull(downloadSignedContract.FilePath);
-                Assert.IsNotNull(downloadSignedContract.Message);
-                Assert.IsNotNull(downloadSignedContract.Base64FileData);
+                //Assert.IsNotNull(downloadSignedContract.StatusMessage);
+                //Assert.IsNotNull(downloadSignedContract.FileName);
+                //Assert.IsNotNull(downloadSignedContract.FilePath);
+                //Assert.IsNotNull(downloadSignedContract.Message);
+                //Assert.IsNotNull(downloadSignedContract.Base64FileData);
 
-                var delete = "cad9c0cc-d045-45f3-9063-f59af387fd1d";
+                //var delete = "cad9c0cc-d045-45f3-9063-f59af387fd1d";
 
-                var deleteFinalContract = sut.DeleteFinalContract(delete);
+                //var deleteFinalContract = sut.DeleteFinalContract(delete);
 
-                Assert.IsNotNull(deleteFinalContract.StatusCode);
-                Assert.IsNotNull(deleteFinalContract.StatusMessage);
-                Assert.IsNotNull(deleteFinalContract.Message);
-
-
-
+                //Assert.IsNotNull(deleteFinalContract.StatusCode);
+                //Assert.IsNotNull(deleteFinalContract.StatusMessage);
+                //Assert.IsNotNull(deleteFinalContract.Message);
             }
         }
     }

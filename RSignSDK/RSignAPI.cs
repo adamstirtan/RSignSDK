@@ -1,14 +1,16 @@
-using Newtonsoft.Json;
-using RSignSDK.Contracts;
-using RSignSDK.Http;
-using RSignSDK.Models;
-using RSignSDK.Models.Authentication;
-using RSignSDK.Models.MasterData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+
+using Newtonsoft.Json;
+
+using RSignSDK.Contracts;
+using RSignSDK.Http;
+using RSignSDK.Models;
+using RSignSDK.Models.Authentication;
+using RSignSDK.Models.MasterData;
 
 namespace RSignSDK
 {
@@ -83,7 +85,7 @@ namespace RSignSDK
                 .Single(x => _options.ExpiryType.Equals(x.Description, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        public string Send(byte[] documentByte, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
+        public string SendByteDocument(byte[] documentByte, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
         {
             var envelopeId = "";
 
@@ -140,7 +142,7 @@ namespace RSignSDK
             return envelopeId;
         }
 
-        public string Send(string filePath, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
+        public string SendFilePath(string filePath, string documentName, string templateName, string recipientEmail, string recipientName, string subject, string body)
         {
             var envelopeId = "";
 
@@ -159,8 +161,7 @@ namespace RSignSDK
             var bytesDoc = System.IO.File.ReadAllBytes(filePath);
             var uploadLocalDocument = UploadLocalDocument(new UploadLocalDocumentRequest(bytesDoc)
             {
-                // TODO: check what makes sense here
-                FileName = "RSignTest.pdf",
+                FileName = documentName,
                 EnvelopeID = useTemplateResponse.EnvelopeID,
                 EnvelopeStage = "InitializeUseTemplate"
             });
@@ -214,14 +215,14 @@ namespace RSignSDK
                 .DeserializeObject<EnvelopeStatusResponse>(response.Content.ReadAsStringAsync().Result);
         }
 
-        public DownloadSignedContractResponse DownloadSignedContract(string envelopeId)
+        public DownloadSignedContractResponse DownloadSignedContract(string envelopeDisplayCode)
         {
             if (!IsAuthenticated)
             {
                 Authenticate();
             }
 
-            var response = _httpClient.Get($"Manage/GetEnvelopeXMLByCode/{envelopeId}");
+            var response = _httpClient.Get($"Manage/GetDownloadedTerminatedAndIncompleteExipredDocument/{envelopeDisplayCode}");
 
             return JsonConvert
                 .DeserializeObject<DownloadSignedContractResponse>(response.Content.ReadAsStringAsync().Result);
