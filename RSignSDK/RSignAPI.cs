@@ -220,7 +220,7 @@ namespace RSignSDK
                 Authenticate();
             }
 
-            var response = _httpClient.Get($"Manage/GetEnvelopeXMLByCode/{envelopeId}");
+            var response = _httpClient.Get($"Manage/GetDownloadedTerminatedAndIncompleteExipredDocument/{envelopeId}");
 
             return JsonConvert
                 .DeserializeObject<DownloadSignedContractResponse>(response.Content.ReadAsStringAsync().Result);
